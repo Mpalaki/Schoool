@@ -30,11 +30,12 @@ public interface HeadmasterDaoInterface {
 //    . CRUD on Trainers per Courses vii
 //    . CRUD on Assignments per Courses viii
 //    . CRUD on Schedule per Courses 
+    /////////////////////METHODS FOR COURSES://///////////////////////////
     public boolean insertCourse(Course course);
 
-    public Map<Integer,Course> viewCourses();
-    
-    public Map<Integer,Course> getCourses();
+    public Map<Integer, Course> viewCourses();
+
+    public Map<Integer, Course> getCourses();
 
     public Course viewCourseById(int idcouse);
 
@@ -42,29 +43,39 @@ public interface HeadmasterDaoInterface {
 
     public boolean deleteCourse(int idcourse);
 
-    public boolean appointStudentsToCourse(User student, Course course);
+    /////////////////////METHODS FOR ASSIGNMENTS://///////////////////////////
+    public boolean insertAssignment(Assignment assignment);
 
-    public boolean appointTrainersToCourse(User trainer, Course course);
+    public Map<Integer, Assignment> viewAssignments();
 
-    public boolean appointAssignmentsToCourse(Assignment assignment, Course course);
+    public Map<Integer, Assignment> getAssignments();
 
+    public Course viewAssignmentById(int idassignment);
+
+    public void updateAssignment(Assignment assignment);
+
+    public boolean deleteAssignment(int idassignment);
+
+    /////////////////////METHODS FOR STUDENTS://///////////////////////////
     public boolean insertStudent(User student);
 
-    public Map<Integer,User> viewStudents();
-    
-    public Map<Integer,User> getStudents();
+    public Map<Integer, User> viewStudents();
 
-    public User getUserById(int iduser);
+    public Map<Integer, User> getStudents();
 
     public void updateStudent(User student);
 
     public boolean deleteStudent(int idstudent);
 
+    /////////////////////METHODS FOR USERS://///////////////////////////
+    public User getUserById(int iduser);
+
+    /////////////////////METHODS FOR TRAINERS://///////////////////////////
     public boolean insertTrainer(User trainer);
 
-    public Map<Integer,User> viewTrainers();
-    
-    public Map<Integer,User> getTrainers();
+    public Map<Integer, User> viewTrainers();
+
+    public Map<Integer, User> getTrainers();
 
     public User viewTrainerById(int idtrainer);
 
@@ -74,9 +85,15 @@ public interface HeadmasterDaoInterface {
 
     public boolean deleteTrainer(int idtrainer);
 
-    public boolean appointStudentToCourse(User student, Course course);
+    /////////////////////METHODS FOR JUNCTION TABLES://///////////////////////////
+    public boolean appointStudentsToCourse(int idstudent, int idcourse);
+
+    public boolean appointTrainersToCourse(int idtrainer, int idcourse);
+
+    public boolean appointAssignmentsToCourse(int idassignment, int idcourse);
 
     public List<User> viewStudentsPerCourse(int idcourse);
 
+//    public List<User> getStudentsPerCourse(int idcourse);
     public boolean removeStudentFromCourse(int idcourse);
 }

@@ -6,6 +6,12 @@
 package school;
 
 import Dao.HeadmasterDaoInterfaceImplementation;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import model.Assignment;
 import model.Course;
 import model.User;
 
@@ -18,7 +24,7 @@ public class School {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         // TODO code application logic here
 //        Course c = new Course("course1");
         HeadmasterDaoInterfaceImplementation h1 = new HeadmasterDaoInterfaceImplementation();
@@ -33,10 +39,18 @@ public class School {
 //        Course course = new Course(3, "BC11");
 //        h1.updateCourse(course);
 //        h1.viewTrainers();
-        h1.viewTrainerById(1);
+//        h1.viewTrainerById(1);
 //        h1.viewStudentById(4);
 //        h1.updateStudent(student);
 //        h1.updateTrainer(trainer2);
+//        UserCourse uc = new UserCourse(course);
+//        h1.appointStudentsToCourse(2, 3);
+//        h1.appointTrainersToCourse(4, 3);
+//        int year, int month, int date,
+//                     int hour, int minute, int second, int nano
+        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2007-09-23 10:10:10.0");
+        Assignment assignment = new Assignment("Ass11",timestamp);
+        h1.insertAssignment(assignment);
     }
 
 }
