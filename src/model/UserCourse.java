@@ -10,38 +10,39 @@ package model;
  * @author Makis
  */
 public class UserCourse {
-    private User user;
-    private Course course;
-
-    public UserCourse(User user, Course course) {
-        this.user = user;
-        this.course = course;
-    }
+    private int idusers;
+    private int idcourse;
 
     public UserCourse() {
     }
 
-    public User getUser() {
-        return user;
+    public UserCourse(int idusers, int idcourse) {
+        this.idusers = idusers;
+        this.idcourse = idcourse;
     }
 
-    public Course getCourse() {
-        return course;
+    public int getIdusers() {
+        return idusers;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public int getIdcourse() {
+        return idcourse;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setIdusers(int idusers) {
+        this.idusers = idusers;
+    }
+
+    public void setIdcourse(int idcourse) {
+        this.idcourse = idcourse;
     }
 
     @Override
     public String toString() {
-        return "UserCourse{" + "user=" + user + ", course=" + course + '}';
+        return "UserCourse{" + "idusers=" + idusers + ", idcourse=" + idcourse + '}';
     }
+
     
-    
-    
+
+       
 }

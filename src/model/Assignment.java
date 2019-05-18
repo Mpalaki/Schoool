@@ -6,7 +6,6 @@
 package model;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 /**
  *
@@ -19,6 +18,11 @@ public class Assignment {
     private Timestamp submission_date_time;
 
     public Assignment(String title) {
+        this.title = title;
+    }
+
+    public Assignment(int idassignment, String title) {
+        this.idassignment = idassignment;
         this.title = title;
     }
 

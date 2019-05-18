@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.logging.Logger;
 import model.Assignment;
 import model.Course;
 import model.User;
+import model.UserCourse;
 import utils.dbutils;
 
 /**
@@ -39,12 +42,10 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, course.getCourse_title());
-//            preparedStatement.setDate(2, course.getStart_date());
-//            preparedStatement.setDate(3, course.getEnd_date());
-
             preparedStatement.executeUpdate();
 
-            //conn.close();
+            System.out.println("Successful insert.");
+
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -75,7 +76,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
                 AllCourses.put(course.getIdcourse(), course);
             }
-            System.out.println("The list of songs is the below:");
+            System.out.println("The list of courses is the below:");
             int i = 1;
             for (int id : AllCourses.keySet()) {
                 System.out.println(i + ". " + AllCourses.get(id));
@@ -84,6 +85,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return AllCourses;
@@ -154,24 +161,31 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     public boolean deleteCourse(int idcourse) {
         Connection conn = dbutils.createConnection();
         String sql = "delete from course where idcourse=" + idcourse;
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        Map<Integer, Course> AllCourses = getCourses();
+        if (AllCourses.containsKey(idcourse)) {
             try {
-                conn.close();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.executeUpdate();
+                System.out.println("Successful deletion.");
 
             } catch (SQLException ex) {
                 Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
                         .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+            } finally {
+                try {
+                    conn.close();
 
-        return true;
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            return true;
+        } else {
+            System.out.println("No such record exists.");
+            return false;
+        }
     }
 
     @Override
@@ -195,6 +209,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return AllCourses;
@@ -216,8 +236,8 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
             preparedStatement.setInt(5, 1);
 
             preparedStatement.executeUpdate();
+            System.out.println("Successful insert.");
 
-            //conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -268,6 +288,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return AllStudents;
@@ -275,13 +301,10 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     @Override
     public void updateStudent(User student) {
-        int thesi = student.getIduser();
-        User user = getUserById(thesi);
-        int role = user.getIdrole();
-        if (role == 1) {
-            Connection conn = dbutils.createConnection();
-            String sql = "update users set first_name=? , last_name=? , username=? , passw0rd=? , idrole=? where idusers=? ;";
-
+        Connection conn = dbutils.createConnection();
+        String sql = "update users set first_name=? , last_name=? , username=? , passw0rd=? , idrole=? where idusers=? ;";
+        Map<Integer, User> allStudents = getStudents();
+        if (allStudents.containsKey(student.getIduser())) {
             try {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
@@ -292,6 +315,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
                 preparedStatement.setInt(5, 1);
                 preparedStatement.setInt(6, student.getIduser());
                 preparedStatement.executeUpdate();
+                System.out.println("Successful update.");
 
             } catch (SQLException ex) {
                 Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
@@ -306,7 +330,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
                 }
             }
         } else {
-            System.out.println("the record with the id: " + student.getIduser() + " is not a record for student");
+            System.out.println("No such student record (ID: " + student.getIduser() + ") exists.");
         }
     }
 
@@ -314,28 +338,36 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     public boolean deleteStudent(int idusers) {
         Connection conn = dbutils.createConnection();
         String sql = "delete from users where idusers=" + idusers;
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        Map<Integer, User> allStudents = getStudents();
+        if (allStudents.containsKey(idusers)) {
             try {
-                conn.close();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.executeUpdate();
+                System.out.println("Successful deletion.");
 
             } catch (SQLException ex) {
                 Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
                         .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+            } finally {
+                try {
+                    conn.close();
 
-        return true;
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            return true;
+
+        } else {
+            System.out.println("No such student record (ID: " + idusers + ") exists.");
+            return false;
+        }
     }
 
     @Override
-    public User viewStudentById(int idstudent) {
+    public User viewStudentById(int idstudent) { // THELEI DIORTHOSI AN APOFASISO NA TIN KRATISO///////////////
         User student = getUserById(idstudent);
         int role = student.getIdrole();
         if (role == 1) {
@@ -407,6 +439,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return AllStudents;
@@ -414,25 +452,25 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     /////////////////////METHODS FOR USERS://///////////////////////////
     @Override
-    public User getUserById(int iduser) {
+    public User getUserById(int iduser) {// THELEI DIORTHOSI I PETAMA ////////////////////
         Connection conn = dbutils.createConnection();
         String sql = "select * from users where idusers=?";
-        User student = new User();
+        User user = new User();
         try {
             PreparedStatement pst = conn.prepareStatement(sql);
             ResultSet rs = null;
             pst.setInt(1, iduser);
             rs = pst.executeQuery();
             while (rs.next()) {
-                student.setIduser(iduser);
+                user.setIduser(iduser);
                 String firstname = rs.getString("first_name");
-                student.setFirstname(firstname);
+                user.setFirstname(firstname);
                 String lastname = rs.getString("last_name");
-                student.setLastname(lastname);
+                user.setLastname(lastname);
                 String username = rs.getString("username");
-                student.setUsername(username);
+                user.setUsername(username);
                 int userrole = rs.getInt("idrole");
-                student.setIdrole(userrole);
+                user.setIdrole(userrole);
 
             }
         } catch (SQLException ex) {
@@ -448,7 +486,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
             }
         }
 
-        return student;
+        return user;
     }
 
     /////////////////////METHODS FOR TRAINERS://///////////////////////////
@@ -467,8 +505,8 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
             preparedStatement.setInt(5, 2);
 
             preparedStatement.executeUpdate();
+            System.out.println("Successful insert.");
 
-            //conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -519,13 +557,19 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return AllTrainers;
     }
 
     @Override
-    public User viewTrainerById(int idtrainer) {
+    public User viewTrainerById(int idtrainer) {//////////AN TIN KRATISO NA TIN FTIAKSO//////////////
         User trainer = getUserById(idtrainer);
         int role = trainer.getIdrole();
         if (role == 2) {
@@ -570,13 +614,10 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     @Override
     public void updateTrainer(User trainer) {
-        int thesi = trainer.getIduser();
-        User user = getUserById(thesi);
-        int role = user.getIdrole();
-        if (role == 2) {
-            Connection conn = dbutils.createConnection();
-            String sql = "update users set first_name=? , last_name=? , username=? , passw0rd=? , idrole=? where idusers=? ;";
-
+        Connection conn = dbutils.createConnection();
+        String sql = "update users set first_name=? , last_name=? , username=? , passw0rd=? , idrole=? where idusers=? ;";
+        Map<Integer, User> allTrainers = getTrainers();
+        if (allTrainers.containsKey(trainer.getIduser())) {
             try {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
@@ -587,6 +628,8 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
                 preparedStatement.setInt(5, 2);
                 preparedStatement.setInt(6, trainer.getIduser());
                 preparedStatement.executeUpdate();
+
+                System.out.println("Succesfull update.");
 
             } catch (SQLException ex) {
                 Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
@@ -601,7 +644,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
                 }
             }
         } else {
-            System.out.println("the record with the id: " + trainer.getIduser() + " is not a record for trainer");
+            System.out.println("No such trainer record (ID: " + trainer.getIduser() + ") exists.");
         }
     }
 
@@ -609,24 +652,32 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     public boolean deleteTrainer(int idtrainer) {
         Connection conn = dbutils.createConnection();
         String sql = "delete from users where idusers=" + idtrainer;
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        Map<Integer, User> allTrainers = getTrainers();
+        if (allTrainers.containsKey(idtrainer)) {
             try {
-                conn.close();
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.executeUpdate();
+
+                System.out.println("Successful deletion.");
 
             } catch (SQLException ex) {
                 Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
                         .getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+            } finally {
+                try {
+                    conn.close();
 
-        return true;
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            return true;
+        } else {
+            System.out.println("No such trainer record (ID: " + idtrainer + ") exists.");
+            return false;
+        }
     }
 
     @Override
@@ -658,6 +709,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         return AllTrainers;
@@ -677,7 +734,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
             preparedStatement.executeUpdate();
             System.out.println("Successful insert.");
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -695,40 +752,174 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     @Override
     public Map<Integer, Assignment> viewAssignments() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        String sql = "select * from assignment";
+        Map<Integer, Assignment> allAssignments = new HashMap<>();
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Assignment assignment = new Assignment();
+                int idassignment = rs.getInt("idassignment");
+                assignment.setIdassignment(idassignment);
+                String assignment_title = rs.getString("assignment_title");
+                assignment.setTitle(assignment_title);
+                Timestamp submission_date_time = rs.getTimestamp("submission_date_time");
+                assignment.setSubmission_date_time(submission_date_time);
+
+                allAssignments.put(assignment.getIdassignment(), assignment);
+            }
+            System.out.println("The list of assignments is the below:");
+            int i = 1;
+            for (int id : allAssignments.keySet()) {
+                System.out.println(i + ". " + allAssignments.get(id));
+                i++;
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return allAssignments;
     }
 
     @Override
     public Map<Integer, Assignment> getAssignments() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        String sql = "select * from assignment";
+        Map<Integer, Assignment> allAssignments = new HashMap<>();
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Assignment assignment = new Assignment();
+                int idassignment = rs.getInt("idassignment");
+                assignment.setIdassignment(idassignment);
+                String assignment_title = rs.getString("assignment_title");
+                assignment.setTitle(assignment_title);
+                Timestamp submission_date_time = rs.getTimestamp("submission_date_time");
+                assignment.setSubmission_date_time(submission_date_time);
+
+                allAssignments.put(assignment.getIdassignment(), assignment);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return allAssignments;
     }
 
     @Override
-    public Course viewAssignmentById(int idassignment) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Assignment viewAssignmentById(int idassignment) {///////////NA TIN ALLAKSO AN TIN KRATISO/////////////
+        Connection conn = dbutils.createConnection();
+        String sql = "select * from assignment where idassignment=?";
+        Assignment assignment = new Assignment();
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            pst.setInt(1, idassignment);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                assignment.setIdassignment(idassignment);
+                String assignment_title = rs.getString("assignment_title");
+                assignment.setTitle(assignment_title);
+                Timestamp submission_date_time = rs.getTimestamp("submission_date_time");
+                assignment.setSubmission_date_time(submission_date_time);
+
+            }
+            System.out.println(assignment.toString());
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return assignment;
     }
 
     @Override
     public void updateAssignment(Assignment assignment) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        String sql = "update assignment set assignment_title=?, submission_date_time=? where idassignment=? ;";
+        Map<Integer, Assignment> allAssignments = getAssignments();
+        if (allAssignments.containsKey(assignment.getIdassignment())) { // Checking if the requested record exists in the database.
+
+            try {
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+                preparedStatement.setString(1, assignment.getTitle());
+                preparedStatement.setTimestamp(2, assignment.getSubmission_date_time());
+                preparedStatement.setInt(3, assignment.getIdassignment());
+                preparedStatement.executeUpdate();
+
+                System.out.println("Updated successfully.");
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            System.out.println("No such record exists.");
+        }
     }
 
     @Override
     public boolean deleteAssignment(int idassignment) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        String sql = "delete from assignment where idassignment=" + idassignment;
+        Map<Integer, Assignment> allAssignments = getAssignments();
+        if (allAssignments.containsKey(idassignment)) { // Checking if the requested record exists in the database.
+
+            try {
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.executeUpdate();
+                System.out.println("Successful deletion.");
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            return true;
+        } else {
+            System.out.println("No such record exists.");
+            return false;
+        }
     }
 
     /////////////////////METHODS FOR JUNCTION TABLES://///////////////////////////
-    @Override
-    public List<User> viewStudentsPerCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean removeStudentFromCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public boolean appointStudentsToCourse(int idstudent, int idcourse) {
         Connection conn = dbutils.createConnection();
@@ -835,6 +1026,140 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     @Override
     public boolean appointAssignmentsToCourse(int idassignment, int idcourse) {
+        Connection conn = dbutils.createConnection();
+        String sql = " INSERT INTO assignmentcourse (idassignment,idcourse)"
+                + "VALUES (?,?);";
+        Map<Integer, Assignment> allAssignments = getAssignments();
+        Map<Integer, Course> allCourses = getCourses();
+        if (allAssignments.containsKey(idassignment)) {
+            if (allCourses.containsKey(idcourse)) {
+                try {
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+
+                    preparedStatement.setInt(1, idassignment);
+                    preparedStatement.setInt(2, idcourse);
+
+                    preparedStatement.executeUpdate();
+                    System.out.println("Successful appointment.");
+
+                } catch (SQLException ex) {
+
+                    if (ex instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("The assignment is already appointed to this course.");
+                    } else {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } finally {
+                    try {
+                        conn.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                return true;
+            } else {
+                System.out.println("There is not any course with the ID: " + idcourse);
+                return false;
+            }
+        } else {
+            if (allCourses.containsKey(idcourse)) {
+                System.out.println("There is not any assignment with the ID: " + idassignment);
+                return false;
+            } else {
+                System.out.println("There is not any assignment with the ID: " + idassignment + " neither"
+                        + " any course with the ID: " + idcourse);
+                return false;
+            }
+
+        }
+    }
+
+    @Override
+    public List<User> getStudentsPerCourse(int idcourse) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<User> students = new ArrayList();// αρχικοποιω την λιστα με τους μαθητες
+        String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
+                + "from course c  \n"
+                + "inner join usercourse a\n"
+                + "on c.idcourse=a.idcourse and c.idcourse=?\n"
+                + "inner join users u\n"
+                + "on u.idusers=a.idusers where u.idrole=1 order by c.idcourse";
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το κορς που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, idcourse);
+                rs = pst.executeQuery();// να φτιαξω getCourseById method!!!!!!!!////////////////////////////////
+                Course course = viewCourseById(idcourse); // καλω την viewCourseById που επιστρεφει το course object για το id pou zitise
+                while (rs.next()) {
+                    User student = new User();
+                    int idstudent = rs.getInt("idusers");
+                    student = getUserById(idstudent);
+                    students.add(student);
+                }
+
+                System.out.println("The list of students for " + course.toString() + " is the below:");
+                for (int i = 0; i < students.size(); i++) {
+                    System.out.println(i + 1 + ". " + students.get(i).toString());///////να το φτιαξω//////////
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return students;
+    }
+
+    @Override
+    public boolean removeStudentFromCourse(int idstudent, int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Integer, Integer> viewTrainersPerCourse(int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Integer, Integer> getTrainersPerCourse(int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeTrainerFromCourse(int idtrainer, int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Integer, Integer> viewAssignmentsPerCourse(int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Integer, Integer> getAssignmentsPerCourse(int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeAssignmentFromCourse(int idassignment, int idcourse) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Map<Integer, Integer> viewStudentsPerCourse(int idcourse) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

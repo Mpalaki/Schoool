@@ -30,8 +30,8 @@ public class School {
         HeadmasterDaoInterfaceImplementation h1 = new HeadmasterDaoInterfaceImplementation();
 //        h1.insertCourse(c);
 //        User trainer = new User("Alexandros","Porfiris","Alex123","student4");
-        User student = new User(1, "bill", "karfakis", "Bill123", "student 43");
-        User trainer = new User(5, "billis", "Efthymiou", "Bill123", "student 43");
+        User student = new User(6, "bill", "skais", "Bill123", "student 43");
+        User trainer = new User(11, "giannis", "Efthymiou", "Bill123", "student 43");
 //        User trainer2 = new User(5,"billis","Efthymiou","Bill123","student 43");
 //        h1.viewStudentsById(1);
 //        h1.viewCourses();
@@ -42,15 +42,38 @@ public class School {
 //        h1.viewTrainerById(1);
 //        h1.viewStudentById(4);
 //        h1.updateStudent(student);
-//        h1.updateTrainer(trainer2);
+//        h1.updateTrainer(trainer);
 //        UserCourse uc = new UserCourse(course);
 //        h1.appointStudentsToCourse(2, 3);
 //        h1.appointTrainersToCourse(4, 3);
 //        int year, int month, int date,
 //                     int hour, int minute, int second, int nano
-        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2007-09-23 10:10:10.0");
-        Assignment assignment = new Assignment("Ass11",timestamp);
-        h1.insertAssignment(assignment);
+//        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2007-09-23 10:10:10.0");
+//        Assignment assignment = new Assignment(1,"Ass311",timestamp);
+//        Assignment ass = new Assignment(1,"test1");
+//                h1.updateAssignment(ass);
+
+//        h1.updateAssignment(ass);
+//h1.viewCourses();
+//        h1.deleteAssignment(2);
+//        h1.deleteAssignment(41);
+//        h1.deleteCourse(55);
+//        h1.updateStudent(student);
+        Course c = new Course(5,"BC42");
+//        h1.insertCourse(c);
+//        h1.viewCourseById(2);
+//        h1.deleteStudent(10);
+//        h1.insertStudent(student);
+//        h1.viewStudentById(1);
+//        h1.viewStudentById(9);h1\\
+//        h1.insertTrainer(trainer);
+//        h1.deleteTrainer(1);
+//        h1.viewAssignments();
+//        h1.deleteAssignment(9);
+//        h1.appointTrainersToCourse(7, 1);
+//        h1.appointAssignmentsToCourse(5, 2);
+        h1.getStudentsPerCourse(3);
+
     }
 
 }
