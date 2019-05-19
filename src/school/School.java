@@ -59,7 +59,7 @@ public class School {
 //        h1.deleteAssignment(41);
 //        h1.deleteCourse(55);
 //        h1.updateStudent(student);
-        Course c = new Course(5,"BC42");
+        Course c = new Course(5,"BC32");
 //        h1.insertCourse(c);
 //        h1.viewCourseById(2);
 //        h1.deleteStudent(10);
@@ -72,7 +72,12 @@ public class School {
 //        h1.deleteAssignment(9);
 //        h1.appointTrainersToCourse(7, 1);
 //        h1.appointAssignmentsToCourse(5, 2);
-        h1.getStudentsPerCourse(3);
+//        h1.viewAssignmentsPerCourse(2);
+//        h1.deleteCourse(6);
+//        h1.removeStudentFromCourse(2,1);
+//        h1.viewStudentsPerCourse(1);
+//        h1.removeTrainerFromCourse(5, 1);
+        h1.removeAssignmentFromCourse(3, 2);
 
     }
 

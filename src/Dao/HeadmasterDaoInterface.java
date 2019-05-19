@@ -38,6 +38,8 @@ public interface HeadmasterDaoInterface {
     public Map<Integer, Course> getCourses();
 
     public Course viewCourseById(int idcouse);
+    
+    public Course getCourseById(int idcouse);
 
     public void updateCourse(Course course);
 
@@ -51,6 +53,8 @@ public interface HeadmasterDaoInterface {
     public Map<Integer, Assignment> getAssignments();
 
     public Assignment viewAssignmentById(int idassignment);
+
+    public Assignment getAssignmentById(int idassignment);
 
     public void updateAssignment(Assignment assignment);
 
@@ -79,7 +83,7 @@ public interface HeadmasterDaoInterface {
 
     public User viewTrainerById(int idtrainer);
 
-    public User viewStudentById(int idstudent);
+    public User viewStudentById(int idstudent);// check!!!!!!!!!!   ////////////
 
     public void updateTrainer(User trainer);
 
@@ -92,21 +96,21 @@ public interface HeadmasterDaoInterface {
 
     public boolean appointAssignmentsToCourse(int idassignment, int idcourse);
 
-    public Map<Integer,Integer> viewStudentsPerCourse(int idcourse);
+    public List<User> viewStudentsPerCourse(int idcourse);
     
     public List<User> getStudentsPerCourse(int idcourse);
 
     public boolean removeStudentFromCourse(int idstudent, int idcourse);
     
-    public Map<Integer,Integer> viewTrainersPerCourse(int idcourse);
+    public List<User> viewTrainersPerCourse(int idcourse);
     
-    public Map<Integer,Integer> getTrainersPerCourse(int idcourse);
+    public List<User> getTrainersPerCourse(int idcourse);
 
     public boolean removeTrainerFromCourse(int idtrainer, int idcourse);
     
-    public Map<Integer,Integer> viewAssignmentsPerCourse(int idcourse);
+    public List<Assignment> viewAssignmentsPerCourse(int idcourse);
     
-    public Map<Integer,Integer> getAssignmentsPerCourse(int idcourse);
+    public List<Assignment> getAssignmentsPerCourse(int idcourse);
 
     public boolean removeAssignmentFromCourse(int idassignment, int idcourse);
     

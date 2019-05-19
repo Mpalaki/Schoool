@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import model.Assignment;
 import model.Course;
 import model.User;
-import model.UserCourse;
 import utils.dbutils;
 
 /**
@@ -97,6 +96,34 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     }
 
     @Override
+    public Course getCourseById(int idcouse) {
+        Connection conn = dbutils.createConnection();
+        String sql = "select * from course where idcourse=?";
+        Course course = new Course();
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            pst.setInt(1, idcouse);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                course.setIdcourse(idcouse);
+                String course_title = rs.getString("course_title");
+                course.setCourse_title(course_title);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return course;
+    }
+
+    @Override
     public Course viewCourseById(int idcouse) {
         Connection conn = dbutils.createConnection();
         String sql = "select * from course where idcourse=?";
@@ -160,11 +187,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     @Override
     public boolean deleteCourse(int idcourse) {
         Connection conn = dbutils.createConnection();
-        String sql = "delete from course where idcourse=" + idcourse;
+        String sql = "delete from course where idcourse=?";
         Map<Integer, Course> AllCourses = getCourses();
         if (AllCourses.containsKey(idcourse)) {
             try {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, idcourse);
                 preparedStatement.executeUpdate();
                 System.out.println("Successful deletion.");
 
@@ -337,11 +365,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     @Override
     public boolean deleteStudent(int idusers) {
         Connection conn = dbutils.createConnection();
-        String sql = "delete from users where idusers=" + idusers;
+        String sql = "delete from users where idusers=?";
         Map<Integer, User> allStudents = getStudents();
         if (allStudents.containsKey(idusers)) {
             try {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, idusers);
                 preparedStatement.executeUpdate();
                 System.out.println("Successful deletion.");
 
@@ -651,11 +680,12 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     @Override
     public boolean deleteTrainer(int idtrainer) {
         Connection conn = dbutils.createConnection();
-        String sql = "delete from users where idusers=" + idtrainer;
+        String sql = "delete from users where idusers=?";
         Map<Integer, User> allTrainers = getTrainers();
         if (allTrainers.containsKey(idtrainer)) {
             try {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, idtrainer);
                 preparedStatement.executeUpdate();
 
                 System.out.println("Successful deletion.");
@@ -825,6 +855,37 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     }
 
     @Override
+    public Assignment getAssignmentById(int idassignment) {
+        Connection conn = dbutils.createConnection();
+        String sql = "select * from assignment where idassignment=?";
+        Assignment assignment = new Assignment();
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            pst.setInt(1, idassignment);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                assignment.setIdassignment(idassignment);
+                String assignment_title = rs.getString("assignment_title");
+                assignment.setTitle(assignment_title);
+                Timestamp submission_date_time = rs.getTimestamp("submission_date_time");
+                assignment.setSubmission_date_time(submission_date_time);
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return assignment;
+    }
+
+    @Override
     public Assignment viewAssignmentById(int idassignment) {///////////NA TIN ALLAKSO AN TIN KRATISO/////////////
         Connection conn = dbutils.createConnection();
         String sql = "select * from assignment where idassignment=?";
@@ -890,12 +951,13 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     @Override
     public boolean deleteAssignment(int idassignment) {
         Connection conn = dbutils.createConnection();
-        String sql = "delete from assignment where idassignment=" + idassignment;
+        String sql = "delete from assignment where idassignment=?";
         Map<Integer, Assignment> allAssignments = getAssignments();
         if (allAssignments.containsKey(idassignment)) { // Checking if the requested record exists in the database.
 
             try {
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, idassignment);
                 preparedStatement.executeUpdate();
                 System.out.println("Successful deletion.");
 
@@ -1087,23 +1149,18 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
                 + "on c.idcourse=a.idcourse and c.idcourse=?\n"
                 + "inner join users u\n"
                 + "on u.idusers=a.idusers where u.idrole=1 order by c.idcourse";
-        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το κορς που ζητησε
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
             try {
                 PreparedStatement pst = conn.prepareStatement(sql);
                 ResultSet rs = null;
                 pst.setInt(1, idcourse);
-                rs = pst.executeQuery();// να φτιαξω getCourseById method!!!!!!!!////////////////////////////////
-                Course course = viewCourseById(idcourse); // καλω την viewCourseById που επιστρεφει το course object για το id pou zitise
+                rs = pst.executeQuery();
+                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
                 while (rs.next()) {
                     User student = new User();
                     int idstudent = rs.getInt("idusers");
                     student = getUserById(idstudent);
                     students.add(student);
-                }
-
-                System.out.println("The list of students for " + course.toString() + " is the below:");
-                for (int i = 0; i < students.size(); i++) {
-                    System.out.println(i + 1 + ". " + students.get(i).toString());///////να το φτιαξω//////////
                 }
 
             } catch (SQLException ex) {
@@ -1125,42 +1182,387 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     @Override
     public boolean removeStudentFromCourse(int idstudent, int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        Map<Integer, User> allStudents = getStudents();// returns map with all students
+        if (allStudents.containsKey(idstudent)) {// if the requested student record exists
+            User student = getUserById(idstudent);// returns object student for the requested student id
+            Map<Integer, Course> allCourses = getCourses();// returns map with all courses
+            if (allCourses.containsKey(idcourse)) {// if the requested course record exists
+                List<User> studentsPerCourse = getStudentsPerCourse(idcourse);// returns list with all the students in the requested course
+                if (studentsPerCourse.contains(student)) {// if the student is indeed appointed to the requested course
+                    String sql = "delete from usercourse\n"
+                            + "where idusers=? and idcourse=?";
+                    try {
+                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                        preparedStatement.setInt(1, idstudent);
+                        preparedStatement.setInt(2, idcourse);
+                        preparedStatement.executeUpdate();
+                        System.out.println("Successful deletion.");
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        try {
+                            conn.close();
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                } else {
+                    System.out.println("The student is not appointed to the requested course.");
+                }
+
+                return true;
+            } else {
+                System.out.println("No such course record.");
+                return false;
+            }
+
+        } else {
+            Map<Integer, Course> allCourses = getCourses();// returns map with all courses
+            if (allCourses.containsKey(idcourse)) {// if the requested course record exists
+                System.out.println("No such student record.");
+            } else {
+                System.out.println("No such student record neither such course record");
+            }
+            return false;
+        }
+
     }
 
     @Override
-    public Map<Integer, Integer> viewTrainersPerCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<User> viewTrainersPerCourse(int idcourse) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<User> trainers = new ArrayList();// αρχικοποιω την λιστα με τους trainers
+        String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
+                + "from course c  \n"
+                + "inner join usercourse a\n"
+                + "on c.idcourse=a.idcourse and c.idcourse=?\n"
+                + "inner join users u\n"
+                + "on u.idusers=a.idusers where u.idrole=2 order by c.idcourse";
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, idcourse);
+                rs = pst.executeQuery();
+                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+                while (rs.next()) {
+                    User trainer = new User();
+                    int idtrainer = rs.getInt("idusers");
+                    trainer = getUserById(idtrainer);
+                    trainers.add(trainer);
+                }
+
+                System.out.println("The list of trainers for course: '" + course.getCourse_title() + "' is the below:");
+                for (int i = 0; i < trainers.size(); i++) {
+                    System.out.println(i + 1 + ". " + trainers.get(i).getFirstname() + " " + trainers.get(i).getLastname());
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return trainers;
     }
 
     @Override
-    public Map<Integer, Integer> getTrainersPerCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<User> getTrainersPerCourse(int idcourse) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<User> trainers = new ArrayList();// αρχικοποιω την λιστα με τους trainers
+        String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
+                + "from course c  \n"
+                + "inner join usercourse a\n"
+                + "on c.idcourse=a.idcourse and c.idcourse=?\n"
+                + "inner join users u\n"
+                + "on u.idusers=a.idusers where u.idrole=2 order by c.idcourse";
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, idcourse);
+                rs = pst.executeQuery();
+                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+                while (rs.next()) {
+                    User trainer = new User();
+                    int idtrainer = rs.getInt("idusers");
+                    trainer = getUserById(idtrainer);
+                    trainers.add(trainer);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return trainers;
     }
 
     @Override
     public boolean removeTrainerFromCourse(int idtrainer, int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        Map<Integer, User> allTrainers = getTrainers();// returns map with all trainers
+        if (allTrainers.containsKey(idtrainer)) {// if the requested trainer record exists
+            User trainer = getUserById(idtrainer);// returns object trainer for the requested trainer id
+            Map<Integer, Course> allCourses = getCourses();// returns map with all courses
+            if (allCourses.containsKey(idcourse)) {// if the requested course record exists
+                List<User> trainersPerCourse = getTrainersPerCourse(idcourse);// returns list with all the trainers in the requested course
+                if (trainersPerCourse.contains(trainer)) {// if the trainer is indeed appointed to the requested course
+                    String sql = "delete from usercourse\n"
+                            + "where idusers=? and idcourse=?";
+                    try {
+                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                        preparedStatement.setInt(1, idtrainer);
+                        preparedStatement.setInt(2, idcourse);
+                        preparedStatement.executeUpdate();
+                        System.out.println("Successful deletion.");
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        try {
+                            conn.close();
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                } else {
+                    System.out.println("The trainer is not appointed to the requested course.");
+                }
+
+                return true;
+            } else {
+                System.out.println("No such course record.");
+                return false;
+            }
+
+        } else {
+            Map<Integer, Course> allCourses = getCourses();// returns map with all courses
+            if (allCourses.containsKey(idcourse)) {// if the requested course record exists
+                System.out.println("No such trainer record.");
+            } else {
+                System.out.println("No such trainer record neither such course record");
+            }
+            return false;
+        }
     }
 
     @Override
-    public Map<Integer, Integer> viewAssignmentsPerCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Assignment> viewAssignmentsPerCourse(int idcourse) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<Assignment> assignments = new ArrayList();// αρχικοποιω την λιστα με τa assignments
+        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title\n"
+                + "from course c\n"
+                + "inner join assignmentcourse b\n"
+                + "on c.idcourse=b.idcourse and c.idcourse=?\n"
+                + "inner join assignment a\n"
+                + "on b.idassignment=a.idassignment order by c.idcourse";
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, idcourse);
+                rs = pst.executeQuery();
+                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+                while (rs.next()) {
+                    Assignment as = new Assignment();
+                    int idassignment = rs.getInt("idassignment");
+                    as = getAssignmentById(idassignment);
+                    assignments.add(as);
+                }
+
+                System.out.println("The list of assignments for course: '" + course.getCourse_title() + "' is the below:");
+                for (int i = 0; i < assignments.size(); i++) {
+                    System.out.println(i + 1 + ". " + assignments.get(i).getTitle() + ", submission date and time: " + assignments.get(i).getSubmission_date_time());
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return assignments;
     }
 
     @Override
-    public Map<Integer, Integer> getAssignmentsPerCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Assignment> getAssignmentsPerCourse(int idcourse) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<Assignment> assignments = new ArrayList();// αρχικοποιω την λιστα με τa assignments
+        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title\n"
+                + "from course c\n"
+                + "inner join assignmentcourse b\n"
+                + "on c.idcourse=b.idcourse and c.idcourse=?\n"
+                + "inner join assignment a\n"
+                + "on b.idassignment=a.idassignment order by c.idcourse";
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, idcourse);
+                rs = pst.executeQuery();
+                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+                while (rs.next()) {
+                    Assignment as = new Assignment();
+                    int idassignment = rs.getInt("idassignment");
+                    as = getAssignmentById(idassignment);
+                    assignments.add(as);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return assignments;
     }
 
     @Override
     public boolean removeAssignmentFromCourse(int idassignment, int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Assignment> allAssignments = getAssignments();// returns map with all Assignments
+        if (allAssignments.containsKey(idassignment)) {// if the requested Assignment record exists
+            Assignment assignment = getAssignmentById(idassignment);// returns object Assignment for the requested Assignment id
+            Map<Integer, Course> allCourses = getCourses();// returns map with all courses
+            if (allCourses.containsKey(idcourse)) {// if the requested course record exists
+                List<Assignment> assignmentsPerCourse = getAssignmentsPerCourse(idcourse);// returns list with all the Assignments in the requested course
+                if (assignmentsPerCourse.contains(assignment)) {// if the Assignment is indeed appointed to the requested course
+                    String sql = "delete from assignmentcourse\n"
+                            + "where idassignment=? and idcourse=?";
+                    try {
+                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                        preparedStatement.setInt(1, idassignment);
+                        preparedStatement.setInt(2, idcourse);
+                        preparedStatement.executeUpdate();
+                        System.out.println("Successful deletion.");
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        try {
+                            conn.close();
+
+                        } catch (SQLException ex) {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                } else {
+                    System.out.println("The assignment is not appointed to the requested course.");
+                }
+
+                return true;
+            } else {
+                System.out.println("No such course record.");
+                return false;
+            }
+
+        } else {
+            Map<Integer, Course> allCourses = getCourses();// returns map with all courses
+            if (allCourses.containsKey(idcourse)) {// if the requested course record exists
+                System.out.println("No such assignment record.");
+            } else {
+                System.out.println("No such assignment record neither such course record");
+            }
+            return false;
+        }
     }
 
     @Override
-    public Map<Integer, Integer> viewStudentsPerCourse(int idcourse) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<User> viewStudentsPerCourse(int idcourse) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<User> students = new ArrayList();// αρχικοποιω την λιστα με τους μαθητες
+        String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
+                + "from course c  \n"
+                + "inner join usercourse a\n"
+                + "on c.idcourse=a.idcourse and c.idcourse=?\n"
+                + "inner join users u\n"
+                + "on u.idusers=a.idusers where u.idrole=1 order by c.idcourse";
+        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, idcourse);
+                rs = pst.executeQuery();
+                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+                while (rs.next()) {
+                    User student = new User();
+                    int idstudent = rs.getInt("idusers");
+                    student = getUserById(idstudent);
+                    students.add(student);
+                }
+
+                System.out.println("The list of students for course: '" + course.getCourse_title() + "' is the below:");
+                for (int i = 0; i < students.size(); i++) {
+                    System.out.println(i + 1 + ". " + students.get(i).getFirstname() + " " + students.get(i).getLastname());///////να το φτιαξω//////////
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return students;
     }
 
 }

@@ -6,6 +6,7 @@
 package model;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 /**
  *
@@ -67,6 +68,39 @@ public class Assignment {
     public Assignment(String title, Timestamp submission_date_time) {
         this.title = title;
         this.submission_date_time = submission_date_time;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + this.idassignment;
+        hash = 71 * hash + Objects.hashCode(this.title);
+        hash = 71 * hash + Objects.hashCode(this.submission_date_time);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Assignment other = (Assignment) obj;
+        if (this.idassignment != other.idassignment) {
+            return false;
+        }
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.submission_date_time, other.submission_date_time)) {
+            return false;
+        }
+        return true;
     }
 
 }
