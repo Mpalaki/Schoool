@@ -6,6 +6,8 @@
 package school;
 
 import Dao.HeadmasterDaoInterfaceImplementation;
+import Dao.StudentDaoImplementation;
+import Dao.TrainerDaoImplementation;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -27,6 +29,7 @@ public class School {
 
     /**
      * @param args the command line arguments
+     * @throws java.text.ParseException
      */
     public static void main(String[] args) throws ParseException {
         // TODO code application logic here
@@ -89,8 +92,12 @@ public class School {
 //        Schedule schedule = new Schedule(c,"9/9/2019" );
 //        Course c1 = new Course(12,"man");
 //        Course c1 = h1.getCourseById(2);
-        h1.removeScheduleFromCourse(c,"2030-12-01");
-        
+//        h1.removeScheduleFromCourse(c,"3919-09-07");
+//        h1.appointAssignmentsToCourse(5, 1);
+//        StudentDaoImplementation sdi = new StudentDaoImplementation();
+//        sdi.viewSubmissionDatesOfAssignmentsPerCourse(1);
+        TrainerDaoImplementation t = new TrainerDaoImplementation();
+        t.viewCourses(4);
     }
 
    

@@ -18,20 +18,6 @@ import model.User;
  */
 public interface HeadmasterDaoInterface {
 
-//    Head Master, create any courses needed , appoint
-//
-//    the trainer(s)
-//
-//and the students under each of the courses, appoint assignments to each of the courses
-//    i.CRUD on Courses ii
-//    . CRUD on Students iii
-//    . CRUD on Assignments iv
-//    . CRUD on Trainers v
-//    . CRUD on Students per Courses vi
-//    . CRUD on Trainers per Courses vii
-//    . CRUD on Assignments per Courses viii
-//    . CRUD on Schedule per Courses 
-    /////////////////////METHODS FOR COURSES://///////////////////////////
     public boolean insertCourse(Course course);
 
     public Map<Integer, Course> viewCourses();
@@ -116,10 +102,10 @@ public interface HeadmasterDaoInterface {
     public boolean removeAssignmentFromCourse(int idassignment, int idcourse);
 
     /////////////////////METHODS FOR SCHEDULE TABLE://///////////////////////////
-    public boolean scheduleDayToCourse(Course course,String date);
+    public boolean scheduleDayToCourse(Course course, String date);
 
     public List<Schedule> viewSchedulePerCourse(Course course);
-    
+
     public List<Schedule> getSchedulePerCourse(Course course);
 
     public boolean removeScheduleFromCourse(Course course, String date);
