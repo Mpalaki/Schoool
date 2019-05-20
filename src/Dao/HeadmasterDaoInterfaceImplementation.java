@@ -6,19 +6,26 @@
 package Dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Assignment;
 import model.Course;
+import model.Schedule;
 import model.User;
 import utils.dbutils;
 
@@ -1565,4 +1572,204 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
         return students;
     }
 
+    @Override
+    public boolean scheduleDayToCourse(Course course, String date) {
+        try {
+            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
+            Calendar c = Calendar.getInstance();
+            c.setTime(utilDate);
+            c.add(Calendar.DATE, 1);
+            utilDate = c.getTime();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            Schedule schedule = new Schedule(course.getIdcourse(), sqlDate);
+            Connection conn = dbutils.createConnection();
+            String sql = " INSERT INTO schedules (idcourse,working_day)"
+                    + "VALUES (?,?);";
+            List<Schedule> schedules = getSchedulePerCourse(course);
+            if (!schedules.contains(schedule)) {
+                try {
+
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setInt(1, course.getIdcourse());
+                    preparedStatement.setDate(2, sqlDate);
+                    preparedStatement.executeUpdate();
+                    System.out.println("Successful appointment.");
+
+                } catch (SQLException ex) {
+
+                    if (ex instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("The requested course is already scheduled for the requested date.");
+                    } else {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } finally {
+                    try {
+                        conn.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                return true;
+
+            } else {
+                System.out.println("The requested course is already scheduled for the requested date.");
+                return false;
+
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
+    }
+
+    @Override
+    public List<Schedule> viewSchedulePerCourse(Course course) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<Schedule> schedules = new ArrayList();// αρχικοποιω την λιστα με τa schedules
+        String sql = "SELECT * FROM schoool.schedules where idcourse=?";
+        if (allCourses.containsKey(course.getIdcourse())) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, course.getIdcourse());
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    Schedule sc = new Schedule();
+                    Date working_day = rs.getDate("working_day");
+                    sc.setWorking_Day(working_day);
+
+                    schedules.add(sc);
+                }
+
+                System.out.println("The list of scheduled days for course: '" + course.getCourse_title() + "' is the below:");
+                for (int i = 0; i < schedules.size(); i++) {
+                    System.out.println(i + 1 + ". " + schedules.get(i).getWorking_Day());
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No such course record.");
+        }
+
+        return schedules;
+    }
+
+    @Override
+    public List<Schedule> getSchedulePerCourse(Course course) {
+        Connection conn = dbutils.createConnection();
+        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        List<Schedule> schedules = new ArrayList();// αρχικοποιω την λιστα με τa schedules
+        String sql = "SELECT * FROM schoool.schedules where idcourse=?";
+        if (allCourses.containsKey(course.getIdcourse())) { // αν οντως υπαρχει το course που ζητησε
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setInt(1, course.getIdcourse());
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    Schedule sc = new Schedule();
+                    Date working_day = rs.getDate("working_day");
+                    sc.setWorking_Day(working_day);
+                    int idcourse = rs.getInt("idcourse");
+                    sc.setIdcourse(idcourse);
+
+                    schedules.add(sc);
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+//            System.out.println("No such course record.");
+        }
+
+        return schedules;
+    }
+
+    @Override
+    public boolean removeScheduleFromCourse(Course course, String date) {
+        //            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
+
+//        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String s = formatter.format(date);
+        //            Calendar c = Calendar.getInstance();
+//            c.setTime(utilDate);
+//            c.add(Calendar.DATE, -1);
+//            utilDate = c.getTime();
+//            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+//            String sqlDateToString = formatter.format(sqlDate);
+        Connection conn = dbutils.createConnection();
+        String sql = " delete from schedules where idcourse=? and working_day=?";
+        List<Schedule> schedules = getSchedulePerCourse(course);// returns all schedules
+        Map<Integer, Course> courses = getCourses();// returns all courses
+        if (courses.containsKey(course.getIdcourse())) {
+//                Schedule schedule = new Schedule(course.getIdcourse(), sqlDate);
+//                System.out.println("mpike");
+//                System.out.println(schedules.toString());
+            for (int i = 0; i < schedules.size(); i++) {
+                Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String s1 = formatter.format(schedules.get(i).getWorking_Day()).substring(0, 10);
+                if (course.getIdcourse() == schedules.get(i).getIdcourse()
+                        && s1.equals(date)) {
+                    System.out.println("yessssss");
+                    try {
+
+                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                        preparedStatement.setInt(1, course.getIdcourse());
+                        preparedStatement.setDate(2, schedules.get(i).getWorking_Day());
+                        preparedStatement.executeUpdate();
+                        System.out.println("Successful Deletion.");
+
+                    } catch (SQLException ex) {
+
+                        if (ex instanceof SQLIntegrityConstraintViolationException) {
+                            System.out.println("The course is already appointed to this date.");
+                        } else {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    } finally {
+                        try {
+                            conn.close();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    return true;
+
+                }
+                    
+                }
+            }
+//
+//                if (schedules.contains(schedule)) {
+                     else {
+                    System.out.println("No such schedule record");
+                    return false;
+
+                }
+            return true;
+    } 
+
+    
 }

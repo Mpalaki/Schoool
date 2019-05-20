@@ -11,8 +11,12 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import model.Assignment;
 import model.Course;
+import model.Schedule;
 import model.User;
 
 /**
@@ -59,7 +63,7 @@ public class School {
 //        h1.deleteAssignment(41);
 //        h1.deleteCourse(55);
 //        h1.updateStudent(student);
-        Course c = new Course(5,"BC32");
+        Course c = h1.getCourseById(2);
 //        h1.insertCourse(c);
 //        h1.viewCourseById(2);
 //        h1.deleteStudent(10);
@@ -77,8 +81,18 @@ public class School {
 //        h1.removeStudentFromCourse(2,1);
 //        h1.viewStudentsPerCourse(1);
 //        h1.removeTrainerFromCourse(5, 1);
-        h1.removeAssignmentFromCourse(3, 2);
+//        h1.removeAssignmentFromCourse(3, 2);
+//        String s = "February 3, 2019";
+//        dateInput(s);
+//        h1.viewSchedulePerCourse(c);
 
+//        Schedule schedule = new Schedule(c,"9/9/2019" );
+//        Course c1 = new Course(12,"man");
+//        Course c1 = h1.getCourseById(2);
+        h1.removeScheduleFromCourse(c,"2030-12-01");
+        
     }
 
+   
+    
 }

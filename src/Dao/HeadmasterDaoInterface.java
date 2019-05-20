@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import model.Assignment;
 import model.Course;
+import model.Schedule;
 import model.User;
 
 /**
@@ -38,7 +39,7 @@ public interface HeadmasterDaoInterface {
     public Map<Integer, Course> getCourses();
 
     public Course viewCourseById(int idcouse);
-    
+
     public Course getCourseById(int idcouse);
 
     public void updateCourse(Course course);
@@ -97,21 +98,30 @@ public interface HeadmasterDaoInterface {
     public boolean appointAssignmentsToCourse(int idassignment, int idcourse);
 
     public List<User> viewStudentsPerCourse(int idcourse);
-    
+
     public List<User> getStudentsPerCourse(int idcourse);
 
     public boolean removeStudentFromCourse(int idstudent, int idcourse);
-    
+
     public List<User> viewTrainersPerCourse(int idcourse);
-    
+
     public List<User> getTrainersPerCourse(int idcourse);
 
     public boolean removeTrainerFromCourse(int idtrainer, int idcourse);
-    
+
     public List<Assignment> viewAssignmentsPerCourse(int idcourse);
-    
+
     public List<Assignment> getAssignmentsPerCourse(int idcourse);
 
     public boolean removeAssignmentFromCourse(int idassignment, int idcourse);
+
+    /////////////////////METHODS FOR SCHEDULE TABLE://///////////////////////////
+    public boolean scheduleDayToCourse(Course course,String date);
+
+    public List<Schedule> viewSchedulePerCourse(Course course);
     
+    public List<Schedule> getSchedulePerCourse(Course course);
+
+    public boolean removeScheduleFromCourse(Course course, String date);
+
 }
