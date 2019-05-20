@@ -3,12 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/Assignment.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/HeadmasterDaoInterface.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/school/School.java</file>
             <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/HeadmasterDaoInterfaceImplementation.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/UserCourse.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/User.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/school/School.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/HeadmasterDaoInterface.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/Assignment.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/Schedule.java</file>
         </group>
     </open-files>
 </project-private>
