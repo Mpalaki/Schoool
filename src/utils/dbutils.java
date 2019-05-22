@@ -16,8 +16,8 @@ import java.util.logging.Logger;
  * @author Makis
  */
 public class dbutils {
-            private static final String USERNAME = "newuser";
-            private static final String PASS = "Kodikos@123";
+            private static final String USERNAME = "";
+            private static final String PASS = "";
             private static final String MYSQLURL = "jdbc:mysql://localhost:3306/schoool?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowMultiQueries=true";
             
     public static Connection createConnection(){  
