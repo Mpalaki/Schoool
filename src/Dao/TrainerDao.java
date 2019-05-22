@@ -6,6 +6,8 @@
 package Dao;
 
 import java.util.List;
+import model.Assignment;
+import model.AssignmentUser;
 import model.Course;
 import model.User;
 
@@ -14,18 +16,22 @@ import model.User;
  * @author Makis
  */
 public interface TrainerDao {
-    
+
 //  i. View all the Courses he / she is enrolled 
 // ii. View all the Students per Course 
 //iii. View all the Assignments per Student per Course 
 // iv. Mark all the Assignments per Student per Course 
-    
-    public List<Course> viewCourses(int idtrainer);
-    
-    public List<Course> getCourses(int idtrainer);
-    
+    public List<Course> viewCoursesPerTrainersCourse(int idtrainer);
+
+    public List<Course> getCoursesPerTrainersCourse(int idtrainer);
+
     public List<User> viewStudents(int idtrainer, int idcourse);
+
+   
+    public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idcourse);
     
+    public List<AssignmentUser> getAssignmentsPerStudentPerCourse(int idcourse);
     
-    
+    public boolean updateAssignmentCourseStudentTable(int idcourse);
+
 }

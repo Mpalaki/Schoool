@@ -37,6 +37,8 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     public HeadmasterDaoInterfaceImplementation() {
     }
+    
+    TrainerDaoImplementation td = new TrainerDaoImplementation();
 
     /////////////////////METHODS FOR COURSES://///////////////////////////
     @Override
@@ -992,7 +994,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     @Override
     public boolean appointStudentsToCourse(int idstudent, int idcourse) {
         Connection conn = dbutils.createConnection();
-        String sql = " INSERT INTO usercourse (idusers,idcourse)"
+        String sql = " INSERT INTO studentcourse (idusers,idcourse)"
                 + "VALUES (?,?);";
         Map<Integer, User> allStudents = getStudents();
         Map<Integer, Course> allCourses = getCourses();
@@ -1006,6 +1008,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
                     preparedStatement.executeUpdate();
                     System.out.println("Successful appointment.");
+//                    td.updateAssignmentCourseStudentTable(idcourse);
 
                 } catch (SQLException ex) {
 
@@ -1044,7 +1047,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     @Override
     public boolean appointTrainersToCourse(int idtrainer, int idcourse) {
         Connection conn = dbutils.createConnection();
-        String sql = " INSERT INTO usercourse (idusers,idcourse)"
+        String sql = " INSERT INTO trainercourse (idusers,idcourse)"
                 + "VALUES (?,?);";
         Map<Integer, User> allTrainers = getTrainers();
         Map<Integer, Course> allCourses = getCourses();
@@ -1152,7 +1155,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
         List<User> students = new ArrayList();// αρχικοποιω την λιστα με τους μαθητες
         String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
                 + "from course c  \n"
-                + "inner join usercourse a\n"
+                + "inner join studentcourse a\n"
                 + "on c.idcourse=a.idcourse and c.idcourse=?\n"
                 + "inner join users u\n"
                 + "on u.idusers=a.idusers where u.idrole=1 order by c.idcourse";
@@ -1197,7 +1200,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
             if (allCourses.containsKey(idcourse)) {// if the requested course record exists
                 List<User> studentsPerCourse = getStudentsPerCourse(idcourse);// returns list with all the students in the requested course
                 if (studentsPerCourse.contains(student)) {// if the student is indeed appointed to the requested course
-                    String sql = "delete from usercourse\n"
+                    String sql = "delete from studentcourse\n"
                             + "where idusers=? and idcourse=?";
                     try {
                         PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -1248,7 +1251,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
         List<User> trainers = new ArrayList();// αρχικοποιω την λιστα με τους trainers
         String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
                 + "from course c  \n"
-                + "inner join usercourse a\n"
+                + "inner join trainercourse a\n"
                 + "on c.idcourse=a.idcourse and c.idcourse=?\n"
                 + "inner join users u\n"
                 + "on u.idusers=a.idusers where u.idrole=2 order by c.idcourse";
@@ -1295,7 +1298,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
         List<User> trainers = new ArrayList();// αρχικοποιω την λιστα με τους trainers
         String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
                 + "from course c  \n"
-                + "inner join usercourse a\n"
+                + "inner join trainercourse a\n"
                 + "on c.idcourse=a.idcourse and c.idcourse=?\n"
                 + "inner join users u\n"
                 + "on u.idusers=a.idusers where u.idrole=2 order by c.idcourse";
@@ -1340,7 +1343,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
             if (allCourses.containsKey(idcourse)) {// if the requested course record exists
                 List<User> trainersPerCourse = getTrainersPerCourse(idcourse);// returns list with all the trainers in the requested course
                 if (trainersPerCourse.contains(trainer)) {// if the trainer is indeed appointed to the requested course
-                    String sql = "delete from usercourse\n"
+                    String sql = "delete from trainercourse\n"
                             + "where idusers=? and idcourse=?";
                     try {
                         PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -1532,7 +1535,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
         List<User> students = new ArrayList();// αρχικοποιω την λιστα με τους μαθητες
         String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
                 + "from course c  \n"
-                + "inner join usercourse a\n"
+                + "inner join studentcourse a\n"
                 + "on c.idcourse=a.idcourse and c.idcourse=?\n"
                 + "inner join users u\n"
                 + "on u.idusers=a.idusers where u.idrole=1 order by c.idcourse";

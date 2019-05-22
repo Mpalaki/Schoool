@@ -11,44 +11,39 @@ import java.util.Objects;
  *
  * @author Makis
  */
-public class UserCourse {
+public class AssignmentUser {
+    private Assignment assignment;
     private User user;
-    private Course course;
 
-    public UserCourse() {
+    public AssignmentUser() {
     }
 
-    public UserCourse(User user, Course course) {
+    public AssignmentUser(Assignment assignment, User user) {
+        this.assignment = assignment;
         this.user = user;
-        this.course = course;
+    }
+
+    public Assignment getAssignment() {
+        return assignment;
     }
 
     public User getUser() {
         return user;
     }
 
-    public Course getCourse() {
-        return course;
+    public void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    @Override
-    public String toString() {
-        return "UserCourse{" + "user=" + user + ", course=" + course + '}';
-    }
-
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.user);
-        hash = 67 * hash + Objects.hashCode(this.course);
+        hash = 79 * hash + Objects.hashCode(this.assignment);
+        hash = 79 * hash + Objects.hashCode(this.user);
         return hash;
     }
 
@@ -63,17 +58,21 @@ public class UserCourse {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final UserCourse other = (UserCourse) obj;
-        if (!Objects.equals(this.user, other.user)) {
+        final AssignmentUser other = (AssignmentUser) obj;
+        if (!Objects.equals(this.assignment, other.assignment)) {
             return false;
         }
-        if (!Objects.equals(this.course, other.course)) {
+        if (!Objects.equals(this.user, other.user)) {
             return false;
         }
         return true;
     }
 
-   
-
-       
+    @Override
+    public String toString() {
+        return "AssignmentUser{" + "assignment=" + assignment + ", user=" + user + '}';
+    }
+    
+    
+    
 }

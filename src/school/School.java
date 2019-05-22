@@ -37,7 +37,7 @@ public class School {
         HeadmasterDaoInterfaceImplementation h1 = new HeadmasterDaoInterfaceImplementation();
 //        h1.insertCourse(c);
 //        User trainer = new User("Alexandros","Porfiris","Alex123","student4");
-        User student = new User(6, "bill", "skais", "Bill123", "student 43");
+//        User student = new User(6, "r ", "fotrrrrreinos", "fff555", "student 43");
         User trainer = new User(11, "giannis", "Efthymiou", "Bill123", "student 43");
 //        User trainer2 = new User(5,"billis","Efthymiou","Bill123","student 43");
 //        h1.viewStudentsById(1);
@@ -76,7 +76,7 @@ public class School {
 //        h1.insertTrainer(trainer);
 //        h1.deleteTrainer(1);
 //        h1.viewAssignments();
-//        h1.deleteAssignment(9);
+//        h1.deleteAssignment(7);
 //        h1.appointTrainersToCourse(7, 1);
 //        h1.appointAssignmentsToCourse(5, 2);
 //        h1.viewAssignmentsPerCourse(2);
@@ -93,11 +93,18 @@ public class School {
 //        Course c1 = new Course(12,"man");
 //        Course c1 = h1.getCourseById(2);
 //        h1.removeScheduleFromCourse(c,"3919-09-07");
-//        h1.appointAssignmentsToCourse(5, 1);
+//        h1.appointAssignmentsToCourse(8, 1);
 //        StudentDaoImplementation sdi = new StudentDaoImplementation();
 //        sdi.viewSubmissionDatesOfAssignmentsPerCourse(1);
-        TrainerDaoImplementation t = new TrainerDaoImplementation();
-        t.viewCourses(4);
+//        TrainerDaoImplementation t = new TrainerDaoImplementation();
+//        t.viewCourses(4);
+//        t.viewStudents(4, 2);
+            h1.appointAssignmentsToCourse(3,2);
+//        h1.appointStudentsToCourse(1, 1);
+//        h1.removeAssignmentFromCourse(4, 1);
+//        h1.insertStudent(student);
+//        h1.removeStudentFromCourse(1, 1);
+//        t.viewAssignmentsPerStudentPerCourse(1);
     }
 
    
