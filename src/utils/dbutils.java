@@ -23,8 +23,8 @@ public class dbutils {
     public static Connection createConnection(){  
             Connection conn=null;     
             try {
-            conn = DriverManager.getConnection(MYSQLURL,USERNAME,PASS);
-            return conn;
+            conn=DriverManager.getConnection(MYSQLURL,USERNAME,PASS);
+            return conn ;
             
         } catch (SQLException ex) {
             Logger.getLogger(dbutils.class.getName()).log(Level.SEVERE, null, ex);

@@ -7,8 +7,10 @@ package Dao;
 
 import java.util.List;
 import model.Assignment;
+import model.AssignmentCourse;
 import model.Course;
 import model.User;
+import model.UserCourse;
 
 /**
  *
@@ -29,4 +31,10 @@ public interface StudentDao {
     public void updateAssignmentCourseStudent(int idstudent);
     
     public List<User> getCoursePerStudent(int idcourse);
+    
+    public boolean submitAssignment(int idassignment,int idstudent,int idcourse);
+
+    public List<AssignmentCourse> viewAssignmentsPerCoursePerStudent(int idstudent);
+    
+    public List<AssignmentCourse> getAssignmentsPerCoursePerStudent(int idstudent);
 }

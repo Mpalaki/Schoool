@@ -133,7 +133,7 @@ public class TrainerDaoImplementation implements TrainerDao {
         Connection conn = dbutils.createConnection();
         Map<Integer, Course> allCourses = hm.getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
         List<AssignmentUser> assignmentusers = new ArrayList();// αρχικοποιω την λιστα με τους assignmentusers
-        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name\n"
+        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name,b.mark,b.submitted\n"
                 + "from assignment a\n"
                 + "inner join assignmentcourse ac\n"
                 + "on a.idassignment=ac.idassignment\n"
@@ -143,6 +143,8 @@ public class TrainerDaoImplementation implements TrainerDao {
                 + "on c.idcourse=sc.idcourse\n"
                 + "inner join users u\n"
                 + "on sc.idusers=u.idusers\n"
+                + "left join assignmentcoursestudent b\n"
+                + "on b.idusers=u.idusers \n"
                 + "where c.idcourse=?\n"
                 + "order by c.idcourse";
         if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
@@ -160,6 +162,10 @@ public class TrainerDaoImplementation implements TrainerDao {
                     student = hm.getUserById(idstudent);
                     int idassignment = rs.getInt("idassignment");
                     assignment = hm.getAssignmentById(idassignment);
+                    int mark = rs.getInt("mark");
+                    au.setMark(mark);
+                    boolean submitted = rs.getBoolean("submitted");
+                    au.setSubmitted(submitted);
                     au.setAssignment(assignment);
                     au.setUser(student);
                     assignmentusers.add(au);
@@ -182,7 +188,8 @@ public class TrainerDaoImplementation implements TrainerDao {
                         System.out.println(i + 1 + ". Assignment ID: " + assignmentusers.get(i).getAssignment().getIdassignment()
                                 + ", Assignment title: " + assignmentusers.get(i).getAssignment().getTitle() + ", "
                                 + "Student ID: " + assignmentusers.get(i).getUser().getIduser()
-                                + " Student name: " + assignmentusers.get(i).getUser().getFirstname() + " " + assignmentusers.get(i).getUser().getLastname());///////να το φτιαξω//////////
+                                + " Student name: " + assignmentusers.get(i).getUser().getFirstname() + " " + assignmentusers.get(i).getUser().getLastname()
+                                + ", mark= " + assignmentusers.get(i).getMark() +", "+ assignmentusers.get(i).toString());
                     }
                 }
 
