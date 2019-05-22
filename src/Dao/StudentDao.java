@@ -9,6 +9,7 @@ import java.util.List;
 import model.Assignment;
 import model.AssignmentCourse;
 import model.Course;
+import model.Schedule;
 import model.User;
 import model.UserCourse;
 
@@ -22,12 +23,10 @@ public interface StudentDao {
 //    ii.See the dates of submission of the Assignments per Course
 //    iii.Submit any Assignments 
     
-    public List<Course> viewDailySchedule(int idstudent, String date);
+    public List<Schedule> viewDailySchedule(int idstudent, String date);
     
-    public List<Assignment> viewSubmissionDatesOfAssignmentsPerCourse(int idcourse);
-    
-    public boolean submitAssignments(int idstudent, int idassignment);
-    
+    public List<AssignmentCourse> viewSubmissionDatesOfAssignmentsPerCourse(int idstudent);
+       
     public void updateAssignmentCourseStudent(int idstudent);
     
     public List<User> getCoursePerStudent(int idcourse);

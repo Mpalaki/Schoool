@@ -16,15 +16,15 @@ import java.util.logging.Logger;
  * @author Makis
  */
 public class dbutils {
-            private static final String USERNAME = "";
-            private static final String PASS = "";
+            private static final String USERNAME = "newuser";
+            private static final String PASS = "Kodikos@123";
             private static final String MYSQLURL = "jdbc:mysql://localhost:3306/schoool?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowMultiQueries=true";
             
     public static Connection createConnection(){  
             Connection conn=null;     
             try {
-            conn=DriverManager.getConnection(MYSQLURL,USERNAME,PASS);
-            return conn ;
+            conn = DriverManager.getConnection(MYSQLURL,USERNAME,PASS);
+            return conn;
             
         } catch (SQLException ex) {
             Logger.getLogger(dbutils.class.getName()).log(Level.SEVERE, null, ex);

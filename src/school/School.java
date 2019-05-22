@@ -109,8 +109,11 @@ public class School {
 //        t.viewAssignmentsPerStudentPerCourse(2);
 //        t.updateAssignmentCourseStudentTable(1);
 //            t.markAssignmentPerStudentPerCourse(3,1,2,80);
-//        st.viewAssignmentsPerCoursePerStudent(15);
-        st.submitAssignment(21, 21, 21);
+//        st.viewAssignmentsPerCoursePerStudent(1);
+//        st.submitAssignment(3, 13, 2);
+//        st.viewDailySchedule(1, "2019-05-20");
+//        st.viewSubmissionDatesOfAssignmentsPerCourse(1);
+        t.markAssignmentPerStudentPerCourse(3, 13, 2, 99);
     }
 
    

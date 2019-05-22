@@ -25,7 +25,7 @@ public interface TrainerDao {
 
     public List<Course> getCoursesPerTrainersCourse(int idtrainer);
 
-    public List<User> viewStudents(int idtrainer, int idcourse);
+    public List<User> viewStudentsPerCourse(int idtrainer, int idcourse);
 
    
     public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idcourse);

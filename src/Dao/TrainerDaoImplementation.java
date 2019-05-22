@@ -105,7 +105,7 @@ public class TrainerDaoImplementation implements TrainerDao {
     }
 
     @Override
-    public List<User> viewStudents(int idtrainer, int idcourse) {
+    public List<User> viewStudentsPerCourse(int idtrainer, int idcourse) {
         User trainer = hm.getUserById(idtrainer);// returns object trainer
         List<User> students = null;// initialize list with students
         List<Course> courses = getCoursesPerTrainersCourse(idtrainer);// returns the courses the trainer is enrolled in
@@ -144,7 +144,7 @@ public class TrainerDaoImplementation implements TrainerDao {
                 + "inner join users u\n"
                 + "on sc.idusers=u.idusers\n"
                 + "left join assignmentcoursestudent b\n"
-                + "on b.idusers=u.idusers \n"
+                + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "where c.idcourse=?\n"
                 + "order by c.idcourse";
         if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
@@ -189,7 +189,7 @@ public class TrainerDaoImplementation implements TrainerDao {
                                 + ", Assignment title: " + assignmentusers.get(i).getAssignment().getTitle() + ", "
                                 + "Student ID: " + assignmentusers.get(i).getUser().getIduser()
                                 + " Student name: " + assignmentusers.get(i).getUser().getFirstname() + " " + assignmentusers.get(i).getUser().getLastname()
-                                + ", mark= " + assignmentusers.get(i).getMark() +", "+ assignmentusers.get(i).toString());
+                                + ", mark= " + assignmentusers.get(i).getMark() + ", " + assignmentusers.get(i).toString());
                     }
                 }
 
@@ -215,7 +215,7 @@ public class TrainerDaoImplementation implements TrainerDao {
         Connection conn = dbutils.createConnection();
         Map<Integer, Course> allCourses = hm.getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
         List<AssignmentUser> assignmentusers = new ArrayList();// αρχικοποιω την λιστα με τους assignmentusers
-        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name\n"
+        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name,b.mark,b.submitted\n"
                 + "from assignment a\n"
                 + "inner join assignmentcourse ac\n"
                 + "on a.idassignment=ac.idassignment\n"
@@ -225,6 +225,8 @@ public class TrainerDaoImplementation implements TrainerDao {
                 + "on c.idcourse=sc.idcourse\n"
                 + "inner join users u\n"
                 + "on sc.idusers=u.idusers\n"
+                + "left join assignmentcoursestudent b\n"
+                + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "where c.idcourse=?\n"
                 + "order by c.idcourse";
         if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
@@ -306,39 +308,43 @@ public class TrainerDaoImplementation implements TrainerDao {
         for (int i = 0; i < assignmentusers.size(); i++) {
             if (assignmentusers.get(i).getAssignment().getIdassignment() == idassignment
                     && assignmentusers.get(i).getUser().getIduser() == idstudent) {
-                Connection conn = dbutils.createConnection();
-                String sql = " INSERT INTO assignmentcoursestudent (idassignment,idcourse,idusers,mark,submitted)"
-                        + "VALUES (?,?,?,?,?);";
-                try {
-                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                    preparedStatement.setInt(1, idassignment);
-                    preparedStatement.setInt(2, idstudent);
-                    preparedStatement.setInt(3, idcourse);
-                    preparedStatement.setInt(4, mark);
-                    preparedStatement.setInt(5, 1);
-
-                    preparedStatement.executeUpdate();
-                    System.out.println("Assignment marked.");
-
-                } catch (SQLException ex) {
-
-                    if (ex instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("The assignment is already marked.");
-
-                    } else {
-                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                } finally {
+                if (assignmentusers.get(i).isSubmitted()) {
+                    Connection conn = dbutils.createConnection();
+                    String sql = " update assignmentcoursestudent set mark=?;"
+                            + "where assignmentcoursestudent.idassignment=? and"
+                            + " assignmentcoursestudent.idstudent=? and "
+                            + "assignmentcoursestudent.idcourse=?  "
+                            ;
                     try {
-                        conn.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                        preparedStatement.setInt(1, mark);
+                        preparedStatement.setInt(2, idassignment);
+                        preparedStatement.setInt(3, idstudent);
+                        preparedStatement.setInt(4, idcourse);
 
-                return true;
+                        preparedStatement.executeUpdate();
+                        System.out.println("Assignment marked.");
+
+                    } catch (SQLException ex) {
+
+                        if (ex instanceof SQLIntegrityConstraintViolationException) {
+                            System.out.println("The assignment is already marked.");
+
+                        } else {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    } finally {
+                        try {
+                            conn.close();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    return true;
+                }
             } else {
                 if (i == assignmentusers.size() - 1) {
                     System.out.println("No such record.");

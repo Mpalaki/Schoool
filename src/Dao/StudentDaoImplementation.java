@@ -6,11 +6,16 @@
 package Dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +23,7 @@ import model.Assignment;
 import model.AssignmentCourse;
 import model.AssignmentUser;
 import model.Course;
+import model.Schedule;
 import model.User;
 import model.UserCourse;
 import utils.dbutils;
@@ -31,67 +37,127 @@ public class StudentDaoImplementation implements StudentDao {
     HeadmasterDaoInterfaceImplementation hm = new HeadmasterDaoInterfaceImplementation();
 
     @Override
-    public List<Course> viewDailySchedule(int idstudent, String date) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        Connection conn = dbutils.createConnection();
-//        Map<Integer, Course> allCourses = getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
-//        List<User> trainers = new ArrayList();// αρχικοποιω την λιστα με τους trainers
-//        String sql = "select c.idcourse,c.course_title,u.idusers,u.first_name,u.last_name\n"
-//                + "from course c  \n"
-//                + "inner join trainercourse a\n"
-//                + "on c.idcourse=a.idcourse and c.idcourse=?\n"
-//                + "inner join users u\n"
-//                + "on u.idusers=a.idusers where u.idrole=2 order by c.idcourse";
-//        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
-//            try {
-//                PreparedStatement pst = conn.prepareStatement(sql);
-//                ResultSet rs = null;
-//                pst.setInt(1, idcourse);
-//                rs = pst.executeQuery();
-//                Course course = getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
-//                while (rs.next()) {
-//                    User trainer = new User();
-//                    int idtrainer = rs.getInt("idusers");
-//                    trainer = getUserById(idtrainer);
-//                    trainers.add(trainer);
-//                }
-//
-//                System.out.println("The list of trainers for course: '" + course.getCourse_title() + "' is the below:");
-//                for (int i = 0; i < trainers.size(); i++) {
-//                    System.out.println(i + 1 + ". " + trainers.get(i).getFirstname() + " " + trainers.get(i).getLastname());
-//                }
-//
-//            } catch (SQLException ex) {
-//                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-//            } finally {
-//                try {
-//                    conn.close();
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//
-//        } else {
-//            System.out.println("No such course record.");
-//        }
-//
-//        return trainers;
-    }
+    public List<Schedule> viewDailySchedule(int idstudent, String date) {
+        List<Schedule> schedules = new ArrayList();// αρχικοποιω την λιστα με τους schedules
+        try {
+            Connection conn = dbutils.createConnection();
+            String sql = "SELECT studentcourse.idcourse,working_day\n"
+                    + "FROM schedules\n"
+                    + "inner join\n"
+                    + "studentcourse\n"
+                    + "on schedules.idcourse=studentcourse.idcourse\n"
+                    + "where working_day=? and studentcourse.idusers=?;";
+            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
+            Calendar c = Calendar.getInstance();
+            c.setTime(utilDate);
+            c.add(Calendar.DATE, 1);
+            utilDate = c.getTime();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()); // το date mou
+            try {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = null;
+                pst.setDate(1, sqlDate);
+                pst.setInt(2, idstudent);
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    Schedule schedule = new Schedule();
+                    Course course = new Course();
+                    int idcourse = rs.getInt("idcourse");
+                    course = hm.getCourseById(idcourse);
+                    schedule.setIdcourse(idcourse);
+                    Date working_day = rs.getDate("working_day");
+                    schedules.add(schedule);
+                }
 
-    @Override
-    public List<Assignment> viewSubmissionDatesOfAssignmentsPerCourse(int idcourse) {
-        List<Assignment> assignments = hm.getAssignmentsPerCourse(idcourse);
-        Course course = hm.getCourseById(idcourse);
-        System.out.println("The submission dates for the assignments for course: '" + course.getCourse_title() + "' is the below:");
-        for (int i = 0; i < assignments.size(); i++) {
-            System.out.println(i + 1 + ". " + assignments.get(i).getTitle() + ", submission date and time: " + assignments.get(i).getSubmission_date_time());
+                System.out.println("The list of scheduled courses for date: '" + date + "' is the below:");
+                for (int i = 0; i < schedules.size(); i++) {
+                    Course c1 = hm.getCourseById(schedules.get(i).getIdcourse());
+                    System.out.println(i + 1 + ". " + schedules.get(i).getIdcourse() + ", "
+                            + c1.getCourse_title());
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } catch (ParseException ex) {
+            Logger.getLogger(StudentDaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return assignments;
+        return schedules;
     }
 
     @Override
-    public boolean submitAssignments(int idstudent, int idassignment) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<AssignmentCourse> viewSubmissionDatesOfAssignmentsPerCourse(int idstudent) {
+        Connection conn = dbutils.createConnection();
+        List<AssignmentCourse> assignmentcourses = new ArrayList();// αρχικοποιω την λιστα με τους AssignmentCourse
+        String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name,b.mark,b.submitted\n"
+                + "from assignment a\n"
+                + "inner join assignmentcourse ac\n"
+                + "on a.idassignment=ac.idassignment\n"
+                + "inner join course c\n"
+                + "on ac.idcourse=c.idcourse\n"
+                + "inner join studentcourse sc\n"
+                + "on c.idcourse=sc.idcourse\n"
+                + "inner join users u\n"
+                + "on sc.idusers=u.idusers\n"
+                + "left join assignmentcoursestudent b\n"
+                + "on b.idusers=u.idusers \n"
+                + "where u.idusers=?\n"
+                + "order by c.idcourse";
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            pst.setInt(1, idstudent);
+            rs = pst.executeQuery();
+            User student = hm.getUserById(idstudent); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+            while (rs.next()) {
+                AssignmentCourse ac = new AssignmentCourse();
+                Assignment assignment = new Assignment();
+                student = hm.getUserById(idstudent);
+                int idassignment = rs.getInt("idassignment");
+                assignment = hm.getAssignmentById(idassignment);
+                int idcourse = rs.getInt("idcourse");
+                Course course = hm.getCourseById(idcourse);
+                int mark = rs.getInt("mark");
+                ac.setMark(mark);
+                boolean submitted = rs.getBoolean("submitted");
+                ac.setSubmitted(submitted);
+                ac.setAssignment(assignment);
+                ac.setCourse(course);
+                assignmentcourses.add(ac);
+            }
+            if (assignmentcourses.isEmpty()) {
+                System.out.println("No assignments for you. ");
+
+            } else {
+                System.out.println("The list of assignemnts per course for student: '" + student.getFirstname() + " " + student.getLastname() + "' is the below:");
+                for (int i = 0; i < assignmentcourses.size(); i++) {
+                    System.out.println(i + 1 +"Submission datetime: "+assignmentcourses.get(i).getAssignment().getSubmission_date_time()+
+                            ". Assignment ID: " + assignmentcourses.get(i).getAssignment().getIdassignment()
+                            + ", Assignment title: " + assignmentcourses.get(i).getAssignment().getTitle() + ", "
+                            + "Course ID: " + assignmentcourses.get(i).getCourse().getIdcourse()
+                            + " Course name: " + assignmentcourses.get(i).getCourse().getCourse_title()
+                            + ", mark= " + assignmentcourses.get(i).getMark() + ", " + assignmentcourses.get(i).toString());
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return assignmentcourses;
     }
 
     @Override
@@ -122,7 +188,7 @@ public class StudentDaoImplementation implements StudentDao {
                 preparedStatement.setBoolean(4, true);
                 preparedStatement.executeUpdate();
 
-                System.out.println("Updated successfully.");
+                System.out.println("Submit successful.");
                 return true;
 
             } catch (SQLException ex) {
