@@ -128,7 +128,6 @@ public class TrainerDaoImplementation implements TrainerDao {
         return students;
     }
 
-    
     @Override
     public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idcourse) {
         Connection conn = dbutils.createConnection();
@@ -258,41 +257,88 @@ public class TrainerDaoImplementation implements TrainerDao {
         return assignmentusers;
     }
 
+//    @Override
+//    public boolean updateAssignmentCourseStudentTable(int idcourse) {
+//        Connection conn = dbutils.createConnection();
+//        String sql = " INSERT INTO assignmentcoursestudent (idassignment,idcourse,idusers)"
+//                + "VALUES (?,?,?);";
+//        List<AssignmentUser> assignmentusers = getAssignmentsPerStudentPerCourse(idcourse);// returns all assignmentusers per cpurse
+//        for (AssignmentUser au : assignmentusers) {
+//            try {
+//                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+//                int idassignment = au.getAssignment().getIdassignment();
+//                preparedStatement.setInt(1, idassignment);
+//                preparedStatement.setInt(2, idcourse);
+//                int idusers = au.getUser().getIduser();
+//                preparedStatement.setInt(3, idusers);
+//                
+//                preparedStatement.addBatch();
+//                
+//            } catch (SQLException ex) {
+//
+//                if (ex instanceof SQLIntegrityConstraintViolationException) {
+//                } else {
+//                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+//                            .getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            } finally {
+//                try {
+//                    conn.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
+//        return true;
+//
+//    }
     @Override
-    public boolean updateAssignmentCourseStudentTable(int idcourse) {
-        Connection conn = dbutils.createConnection();
-        String sql = " INSERT INTO assignmentcoursestudent (idassignment,idcourse,idusers)"
-                + "VALUES (?,?,?);";
-        List<AssignmentUser> assignmentusers = getAssignmentsPerStudentPerCourse(idcourse);// returns all assignmentusers per cpurse
-        for (AssignmentUser au : assignmentusers) {
-            try {
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                int idassignment = au.getAssignment().getIdassignment();
-                preparedStatement.setInt(1, idassignment);
-                preparedStatement.setInt(2, idcourse);
-                int idusers = au.getUser().getIduser();
-                preparedStatement.setInt(3, idusers);
-                
-                preparedStatement.executeUpdate();
-                
-            } catch (SQLException ex) {
+    public boolean markAssignmentPerStudentPerCourse(int idassignment, int idstudent, int idcourse, int mark) {
+        List<AssignmentUser> assignmentusers = getAssignmentsPerStudentPerCourse(idcourse);
+        for (int i = 0; i < assignmentusers.size(); i++) {
+            if (assignmentusers.get(i).getAssignment().getIdassignment() == idassignment
+                    && assignmentusers.get(i).getUser().getIduser() == idstudent) {
+                Connection conn = dbutils.createConnection();
+                String sql = " INSERT INTO assignmentcoursestudent (idassignment,idcourse,idusers,mark,submitted)"
+                        + "VALUES (?,?,?,?,?);";
+                try {
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setInt(1, idassignment);
+                    preparedStatement.setInt(2, idstudent);
+                    preparedStatement.setInt(3, idcourse);
+                    preparedStatement.setInt(4, mark);
+                    preparedStatement.setInt(5, 1);
 
-                if (ex instanceof SQLIntegrityConstraintViolationException) {
-                } else {
-                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    preparedStatement.executeUpdate();
+                    System.out.println("Assignment marked.");
+
+                } catch (SQLException ex) {
+
+                    if (ex instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("The assignment is already marked.");
+
+                    } else {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                } finally {
+                    try {
+                        conn.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
 
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                return true;
+            } else {
+                if (i == assignmentusers.size() - 1) {
+                    System.out.println("No such record.");
                 }
             }
         }
         return true;
-
     }
 
 }

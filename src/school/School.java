@@ -96,15 +96,17 @@ public class School {
 //        h1.appointAssignmentsToCourse(8, 1);
 //        StudentDaoImplementation sdi = new StudentDaoImplementation();
 //        sdi.viewSubmissionDatesOfAssignmentsPerCourse(1);
-//        TrainerDaoImplementation t = new TrainerDaoImplementation();
+        TrainerDaoImplementation t = new TrainerDaoImplementation();
 //        t.viewCourses(4);
 //        t.viewStudents(4, 2);
-            h1.appointAssignmentsToCourse(3,2);
+//            h1.appointAssignmentsToCourse(3,2);
 //        h1.appointStudentsToCourse(1, 1);
 //        h1.removeAssignmentFromCourse(4, 1);
 //        h1.insertStudent(student);
 //        h1.removeStudentFromCourse(1, 1);
-//        t.viewAssignmentsPerStudentPerCourse(1);
+        t.viewAssignmentsPerStudentPerCourse(2);
+//        t.updateAssignmentCourseStudentTable(1);
+            t.markAssignmentPerStudentPerCourse(3,5,2,90);
     }
 
    

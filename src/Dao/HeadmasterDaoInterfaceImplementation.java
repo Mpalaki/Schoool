@@ -38,7 +38,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     public HeadmasterDaoInterfaceImplementation() {
     }
     
-    TrainerDaoImplementation td = new TrainerDaoImplementation();
+//    TrainerDaoImplementation td = new TrainerDaoImplementation();
 
     /////////////////////METHODS FOR COURSES://///////////////////////////
     @Override

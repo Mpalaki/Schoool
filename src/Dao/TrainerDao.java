@@ -32,6 +32,8 @@ public interface TrainerDao {
     
     public List<AssignmentUser> getAssignmentsPerStudentPerCourse(int idcourse);
     
-    public boolean updateAssignmentCourseStudentTable(int idcourse);
+//    public boolean updateAssignmentCourseStudentTable(int idcourse);
+    
+    public boolean markAssignmentPerStudentPerCourse(int idassignment, int idstudent, int idcourse, int mark);
 
 }
