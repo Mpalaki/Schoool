@@ -124,7 +124,7 @@ public class School {
 //        h1.removeStudentFromCourse(13, 2);
 //        h1.appointAssignmentsToCourse(8, 2);
 //        h1.appointStudentsToCourse(15, 2);
-//        st.submitAssignment(8, 15, 2);
+//        st.submitAssignment(3, 2, 2);
 //        t.markAssignmentPerStudentPerCourse(6, 2, 1, 100);
 //        System.out.println(t.getAssignmentsPerStudentPerCourse(2));
         AssignmentCourseStudent acs = new AssignmentCourseStudent();

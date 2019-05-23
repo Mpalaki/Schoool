@@ -88,7 +88,6 @@ public class LoginPage {
     }
 
     public void selectSecondaryHeadmasterMenuOptions(int select) {
-//        while(select!=1 || select!=2 || select!=3 || select!=4 ){
         if (select == 1) {
             displayCreateHeadmasterMenuOptions();
         } else if (select == 1) {
@@ -147,8 +146,8 @@ public class LoginPage {
         while (x == 1) {
             try {
                 String date = in.next();
-                Date sqldate = java.sql.Date.valueOf( dateInput(date, user));
-                st.viewDailySchedule(user.getIduser(),sqldate);
+                Date sqldate = java.sql.Date.valueOf(dateInput(date, user));
+                st.viewDailySchedule(user.getIduser(), sqldate);
                 x = 2;
             } catch (Exception e) {
                 System.out.println("you input an invalid date. Please input valid date(yyyy-MM-dd)");
@@ -164,7 +163,15 @@ public class LoginPage {
 //        st.viewSubmissionDatesOfAssignmentsPerCourse(user.getIduser());
 //    }
     private void askStudentforAssignmentId(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        st.viewAssignmentsPerCoursePerStudent(user.getIduser());
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter ID for the assignment you wish to submit. ");
+        inNextNotInt(in);
+        int idassignment = in.nextInt();
+        System.out.println("Please enter ID for the course of the assignment.");
+        inNextNotInt(in);
+        int idcourse = in.nextInt();
+        st.submitAssignment(idassignment, user.getIduser(), idcourse);
     }
 
     public LocalDate dateInput(String userInput, User user) {
@@ -186,6 +193,13 @@ public class LoginPage {
         System.out.println(date);
         return date;
 
+    }
+
+    private void inNextNotInt(Scanner in) {
+        while (!in.hasNextInt()) {
+            System.out.println("Enter numerical.");
+            in.next();
+        }
     }
 
 }

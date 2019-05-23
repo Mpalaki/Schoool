@@ -10,6 +10,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -176,10 +177,11 @@ public class StudentDaoImplementation implements StudentDao {
 
     @Override
     public boolean submitAssignment(int idassignment, int idstudent, int idcourse) {
+        Assignment assignment = hm.getAssignmentById(idassignment);
+        Course course = hm.getCourseById(idcourse);
+        AssignmentCourse ac = new AssignmentCourse(assignment,course);
         List<AssignmentCourse> assignmentscourses = getAssignmentsPerCoursePerStudent(idstudent);
-        if (assignmentscourses.isEmpty()) {
-            return false;
-        } else {
+         if(assignmentscourses.contains(ac)) {
             Connection conn = dbutils.createConnection();
             String sql = "insert into assignmentcoursestudent(idassignment,idcourse,idusers,submitted)\n"
                     + "values(?,?,?,?);";
@@ -192,11 +194,16 @@ public class StudentDaoImplementation implements StudentDao {
                 preparedStatement.setBoolean(4, true);
                 preparedStatement.executeUpdate();
 
-                System.out.println("Submit successful.");
+                System.out.println("Submission successful.");
                 return true;
 
             } catch (SQLException ex) {
-                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                if (ex instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("The assignment is already submitted.");
+                    } else {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
                 return false;
             } finally {
                 try {
@@ -206,6 +213,9 @@ public class StudentDaoImplementation implements StudentDao {
                 }
             }
 
+        }else  {
+             System.out.println("No such assignment is assigned to you.");
+            return false;
         }
     }
 
@@ -301,8 +311,8 @@ public class StudentDaoImplementation implements StudentDao {
                 + "inner join users u\n"
                 + "on sc.idusers=u.idusers\n"
                 + "left join assignmentcoursestudent b\n"
-                + "on b.idusers=u.idusers \n"
                 + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
+                + "where u.idusers=?\n"
                 + "order by c.idcourse";
         try {
             PreparedStatement pst = conn.prepareStatement(sql);
