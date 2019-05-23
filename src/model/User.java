@@ -5,7 +5,17 @@
  */
 package model;
 
+import Dao.HeadmasterDaoInterfaceImplementation;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import utils.dbutils;
 
 /**
  *
@@ -142,8 +152,77 @@ public class User {
         }
         return true;
     }
+
+    HeadmasterDaoInterfaceImplementation hm = new HeadmasterDaoInterfaceImplementation();
+
+    public User getUserByUsername(String username) {
+        User user = new User();
+        Map<String, User> allUsers = getUsers();
+        int i = 0;
+        for (String un : allUsers.keySet()) {
+            if (un.equals(username)) {
+                user = allUsers.get(un);
+            } 
+        }
+        return user;
+    }
+
+    public boolean isUsernameValid(String username) {
+        Map<String, User> allUsers = getUsers();
+        if (allUsers.containsKey(username)) {
+            return true;
+        } else {
+            System.out.println("Invalid username");
+            return false;
+        }
+    }
+
+    public Map<String, User> getUsers() {
+        Connection conn = dbutils.createConnection();
+        String sql = "select * from users";
+        Map<String, User> AllUsers = new HashMap<>();
+        try {
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                int idusers = rs.getInt("idusers");
+                user.setIduser(idusers);
+                String first_name = rs.getString("first_name");
+                user.setFirstname(first_name);
+                String last_name = rs.getString("last_name");
+                user.setLastname(last_name);
+                String username = rs.getString("username");
+                user.setUsername(username);
+                String password = rs.getString("passw0rd");
+                user.setPassword(password);
+                int idrole = rs.getInt("idrole");
+                user.setIdrole(idrole);
+
+                AllUsers.put(user.getUsername(), user);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return AllUsers;
+    }
+    
+    public int checkUserRole(User user){
+        if(user.getIdrole()==1){ return 1;}
+        else if(user.getIdrole()==2){ return 2;}
+        else {return 3;}}
     
     
     
 
+//
 }

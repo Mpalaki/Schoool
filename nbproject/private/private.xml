@@ -3,17 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/StudentDao.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/AssignmentUser.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/TrainerDaoImplementation.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/Schedule.java</file>
             <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/school/School.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/HeadmasterDaoInterfaceImplementation.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/TrainerDao.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/StudentDaoImplementation.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/HeadmasterDaoInterface.java</file>
-            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/AssignmentCourse.java</file>
             <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/utils/dbutils.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/TrainerDao.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/TrainerDaoImplementation.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/model/AssignmentCourseStudent.java</file>
+            <file>file:/C:/Users/Makis/Documents/NetBeansProjects/School/src/Dao/HeadmasterDaoInterfaceImplementation.java</file>
         </group>
     </open-files>
 </project-private>

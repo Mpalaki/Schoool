@@ -336,7 +336,13 @@ public class TrainerDaoImplementation implements TrainerDao {
             }
 
         } else {
-            System.out.println("No such assignment has been submitted");
+//            AssignmentUser au = new AssignmentUser(hm.getAssignmentById(idassignment),hm.getUserById(idstudent));
+//            if(getAssignmentsPerStudentPerCourse(idcourse).contains(au)){
+//                System.out.println("The assignment has not been submitted yet.");}
+//            else{
+                System.out.println("No such assignment has been submitted");
+//            }
+            
             return false;
         }
     }

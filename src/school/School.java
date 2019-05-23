@@ -21,6 +21,7 @@ import model.AssignmentCourseStudent;
 import model.Course;
 import model.Schedule;
 import model.User;
+import userinterface.LoginPage;
 
 /**
  *
@@ -119,13 +120,20 @@ public class School {
 //        h1.appointAssignmentsToCourse(8, 2);
 //        h1.appointStudentsToCourse(15, 2);
 //        st.submitAssignment(8, 15, 2);
-        t.markAssignmentPerStudentPerCourse(3, 2, 45, 100);
+//        t.markAssignmentPerStudentPerCourse(6, 2, 1, 100);
 //        System.out.println(t.getAssignmentsPerStudentPerCourse(2));
         AssignmentCourseStudent acs = new AssignmentCourseStudent();
 //        System.out.println(acs.listOfSubmittedAssignments());
 //        System.out.println(acs.isAssignmentSubmitted(3, 2, 1));
 //        System.out.println(acs.getAssignmentCourseStudentFromIds(3,2,1));
 //        System.out.println(acs.isAssignmentMarked(3, 2, 1));
+//        System.out.println(acs.isAssignmentExistentButNotSubmitted(6, 2, 1));
+        User user = new User();
+//        System.out.println(user.getUserByUsername("student2"));
+        LoginPage lp = new LoginPage();
+//        lp.welcomePage();
+//        lp.displayInitialStudentMenuOptions();
+        lp.displayInitialTrainerMenuOptions();
     }
 
    
