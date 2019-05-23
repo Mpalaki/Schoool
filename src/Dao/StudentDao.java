@@ -5,6 +5,7 @@
  */
 package Dao;
 
+import java.sql.Date;
 import java.util.List;
 import model.Assignment;
 import model.AssignmentCourse;
@@ -23,7 +24,7 @@ public interface StudentDao {
 //    ii.See the dates of submission of the Assignments per Course
 //    iii.Submit any Assignments 
     
-    public List<Schedule> viewDailySchedule(int idstudent, String date);
+    public List<Schedule> viewDailySchedule(int idstudent, Date date);
     
     public List<AssignmentCourse> viewSubmissionDatesOfAssignmentsPerCourse(int idstudent);
        

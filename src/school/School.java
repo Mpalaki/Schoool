@@ -37,6 +37,11 @@ public class School {
         // TODO code application logic here
 //        Course c = new Course("course1");
         HeadmasterDaoInterfaceImplementation h1 = new HeadmasterDaoInterfaceImplementation();
+        
+        
+        //////////////////  MAKE USERNAME UNIQUE IN DATABASE  /////////////////
+        
+        
 //        h1.insertCourse(c);
 //        User trainer = new User("Alexandros","Porfiris","Alex123","student4");
 //        User student = new User(6, "r ", "fotrrrrreinos", "fff555", "student 43");

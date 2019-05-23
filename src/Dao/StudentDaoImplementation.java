@@ -37,58 +37,62 @@ public class StudentDaoImplementation implements StudentDao {
     HeadmasterDaoInterfaceImplementation hm = new HeadmasterDaoInterfaceImplementation();
 
     @Override
-    public List<Schedule> viewDailySchedule(int idstudent, String date) {
+    public List<Schedule> viewDailySchedule(int idstudent, Date date) {
         List<Schedule> schedules = new ArrayList();// αρχικοποιω την λιστα με τους schedules
+//        try {
+        Connection conn = dbutils.createConnection();
+        String sql = "SELECT studentcourse.idcourse,working_day\n"
+                + "FROM schedules\n"
+                + "inner join\n"
+                + "studentcourse\n"
+                + "on schedules.idcourse=studentcourse.idcourse\n"
+                + "where working_day=? and studentcourse.idusers=?;";
+//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
+//            Calendar c = Calendar.getInstance();
+//            c.setTime(utilDate);
+//            c.add(Calendar.DATE, 1);
+//            utilDate = c.getTime();
+//            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()); // το date mou
         try {
-            Connection conn = dbutils.createConnection();
-            String sql = "SELECT studentcourse.idcourse,working_day\n"
-                    + "FROM schedules\n"
-                    + "inner join\n"
-                    + "studentcourse\n"
-                    + "on schedules.idcourse=studentcourse.idcourse\n"
-                    + "where working_day=? and studentcourse.idusers=?;";
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
-            Calendar c = Calendar.getInstance();
-            c.setTime(utilDate);
-            c.add(Calendar.DATE, 1);
-            utilDate = c.getTime();
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime()); // το date mou
-            try {
-                PreparedStatement pst = conn.prepareStatement(sql);
-                ResultSet rs = null;
-                pst.setDate(1, sqlDate);
-                pst.setInt(2, idstudent);
-                rs = pst.executeQuery();
-                while (rs.next()) {
-                    Schedule schedule = new Schedule();
-                    Course course = new Course();
-                    int idcourse = rs.getInt("idcourse");
-                    course = hm.getCourseById(idcourse);
-                    schedule.setIdcourse(idcourse);
-                    Date working_day = rs.getDate("working_day");
-                    schedules.add(schedule);
-                }
-
-                System.out.println("The list of scheduled courses for date: '" + date + "' is the below:");
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = null;
+            pst.setDate(1, date);
+            pst.setInt(2, idstudent);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                Schedule schedule = new Schedule();
+                Course course = new Course();
+                int idcourse = rs.getInt("idcourse");
+                course = hm.getCourseById(idcourse);
+                schedule.setIdcourse(idcourse);
+                Date working_day = rs.getDate("working_day");
+                schedules.add(schedule);
+            }
+            if (schedules.isEmpty()) {
+                System.out.println("No scheduled courses for the requested date.");
+            } else {
+                System.out.println("Your scheduled courses for date: '" + date + "' are the below:");
                 for (int i = 0; i < schedules.size(); i++) {
                     Course c1 = hm.getCourseById(schedules.get(i).getIdcourse());
-                    System.out.println(i + 1 + ". " + schedules.get(i).getIdcourse() + ", "
+                    System.out.println(i + 1 + ". ID: " + schedules.get(i).getIdcourse() + "; Title: "
                             + c1.getCourse_title());
-                }
-
-            } catch (SQLException ex) {
-                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
-        } catch (ParseException ex) {
-            Logger.getLogger(StudentDaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
+//        } 
+//catch (ParseException ex) {
+//            Logger.getLogger(StudentDaoImplementation.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         return schedules;
     }
 
@@ -138,8 +142,8 @@ public class StudentDaoImplementation implements StudentDao {
             } else {
                 System.out.println("The list of assignemnts per course for student: '" + student.getFirstname() + " " + student.getLastname() + "' is the below:");
                 for (int i = 0; i < assignmentcourses.size(); i++) {
-                    System.out.println(i + 1 +"Submission datetime: "+assignmentcourses.get(i).getAssignment().getSubmission_date_time()+
-                            ". Assignment ID: " + assignmentcourses.get(i).getAssignment().getIdassignment()
+                    System.out.println(i + 1 + "Submission datetime: " + assignmentcourses.get(i).getAssignment().getSubmission_date_time()
+                            + ". Assignment ID: " + assignmentcourses.get(i).getAssignment().getIdassignment()
                             + ", Assignment title: " + assignmentcourses.get(i).getAssignment().getTitle() + ", "
                             + "Course ID: " + assignmentcourses.get(i).getCourse().getIdcourse()
                             + " Course name: " + assignmentcourses.get(i).getCourse().getCourse_title()
@@ -298,7 +302,7 @@ public class StudentDaoImplementation implements StudentDao {
                 + "on sc.idusers=u.idusers\n"
                 + "left join assignmentcoursestudent b\n"
                 + "on b.idusers=u.idusers \n"
-                + "where u.idusers=?\n"
+                + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "order by c.idcourse";
         try {
             PreparedStatement pst = conn.prepareStatement(sql);

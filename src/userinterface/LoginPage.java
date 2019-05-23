@@ -7,8 +7,17 @@ package userinterface;
 
 import Dao.HeadmasterDaoInterfaceImplementation;
 import Dao.StudentDaoImplementation;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.User;
 
 /**
@@ -46,8 +55,13 @@ public class LoginPage {
         for (int i = 0; i < menuoptions.length; i++) {
             System.out.println(i + 1 + ". " + menuoptions[i]);
         }
-        int selection = in.nextInt();
-        callRelevantMethod(selection, user);
+        try {
+            int selection = in.nextInt();
+            callRelevantMethod(selection, user);
+        } catch (Exception e) {
+            displayInitialStudentMenuOptions(user);
+            in.next();
+        }
     }
 
     public void displayInitialTrainerMenuOptions(User user) {
@@ -116,7 +130,7 @@ public class LoginPage {
 
     private void callRelevantMethod(int selection, User user) {
         if (selection == 1) {
-            askStudentForCourseAndDate(user);
+            askStudentForDate(user);
         } else if (selection == 2) {
             st.viewSubmissionDatesOfAssignmentsPerCourse(user.getIduser());
         } else if (selection == 3) {
@@ -126,9 +140,20 @@ public class LoginPage {
         }
     }
 
-    private void askStudentForCourseAndDate(User user) {
+    private void askStudentForDate(User user) {
         Scanner in = new Scanner(System.in);
-        System.out.println("Please enter the id of the course. ");
+        System.out.println("Please enter the date of the course(yyyy-MM-dd). ");
+        int x = 1;
+        while (x == 1) {
+            try {
+                String date = in.next();
+                Date sqldate = java.sql.Date.valueOf( dateInput(date, user));
+                st.viewDailySchedule(user.getIduser(),sqldate);
+                x = 2;
+            } catch (Exception e) {
+                System.out.println("you input an invalid date. Please input valid date(yyyy-MM-dd)");
+            }
+        }
     }
 
 //    private void askStudentForCourseId(User user) {
@@ -138,9 +163,29 @@ public class LoginPage {
 //        int selection = in.nextInt();
 //        st.viewSubmissionDatesOfAssignmentsPerCourse(user.getIduser());
 //    }
-
     private void askStudentforAssignmentId(User user) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public LocalDate dateInput(String userInput, User user) {
+//        java.sql.Date sqlDate = null;
+//        try {
+//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
+//            Calendar c = Calendar.getInstance();
+//            c.setTime(utilDate);
+//            c.add(Calendar.DATE, 1);
+//            utilDate = c.getTime();
+//            sqlDate = new java.sql.Date(utilDate.getTime());
+//        } catch (ParseException ex) {
+//            askStudentForDate(user);
+//            Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(userInput, dateFormat);
+        System.out.println(date);
+        return date;
+
     }
 
 }
