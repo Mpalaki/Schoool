@@ -131,9 +131,9 @@ public class School {
         User user = new User();
 //        System.out.println(user.getUserByUsername("student2"));
         LoginPage lp = new LoginPage();
-//        lp.welcomePage();
+        lp.welcomePage();
 //        lp.displayInitialStudentMenuOptions();
-        lp.displayInitialTrainerMenuOptions();
+        /////////////////// APPOINT SCHEDULE TO COURSE, MISSING CHECK FOR COURSE ////////////////
     }
 
    

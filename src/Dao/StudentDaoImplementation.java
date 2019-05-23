@@ -220,7 +220,7 @@ public class StudentDaoImplementation implements StudentDao {
                 + "inner join users u\n"
                 + "on sc.idusers=u.idusers\n"
                 + "left join assignmentcoursestudent b\n"
-                + "on b.idusers=u.idusers \n"
+                + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "where u.idusers=?\n"
                 + "order by c.idcourse";
         try {
