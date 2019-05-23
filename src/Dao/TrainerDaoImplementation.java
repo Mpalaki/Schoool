@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Assignment;
+import model.AssignmentCourseStudent;
 import model.AssignmentUser;
 import model.Course;
 import model.User;
@@ -244,9 +245,28 @@ public class TrainerDaoImplementation implements TrainerDao {
                     student = hm.getUserById(idstudent);
                     int idassignment = rs.getInt("idassignment");
                     assignment = hm.getAssignmentById(idassignment);
+                    int mark = rs.getInt("mark");
+                    au.setMark(mark);
+                    boolean submitted = rs.getBoolean("submitted");
+                    au.setSubmitted(submitted);
                     au.setAssignment(assignment);
                     au.setUser(student);
                     assignmentusers.add(au);
+                }
+                if (assignmentusers.isEmpty()) {
+                    List assignments = hm.getAssignmentsPerCourse(course.getIdcourse());// returns all assignments for the course
+                    if (assignments.isEmpty()) {
+                        List students = hm.getStudentsPerCourse(course.getIdcourse());// returns all students for the course
+                        if (students.isEmpty()) {
+                            System.out.println("No assignments, neither any students appointed to this course.");
+                        } else {
+                            System.out.println("No assignments appointed to this course.");
+                        }
+                    } else {
+                        System.out.println("No students appointed to this course");
+                    }
+                } else {
+                    return assignmentusers;
                 }
 
             } catch (SQLException ex) {
@@ -265,93 +285,60 @@ public class TrainerDaoImplementation implements TrainerDao {
 
         return assignmentusers;
     }
+    AssignmentCourseStudent acs = new AssignmentCourseStudent();
 
-//    @Override
-//    public boolean updateAssignmentCourseStudentTable(int idcourse) {
-//        Connection conn = dbutils.createConnection();
-//        String sql = " INSERT INTO assignmentcoursestudent (idassignment,idcourse,idusers)"
-//                + "VALUES (?,?,?);";
-//        List<AssignmentUser> assignmentusers = getAssignmentsPerStudentPerCourse(idcourse);// returns all assignmentusers per cpurse
-//        for (AssignmentUser au : assignmentusers) {
-//            try {
-//                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-//                int idassignment = au.getAssignment().getIdassignment();
-//                preparedStatement.setInt(1, idassignment);
-//                preparedStatement.setInt(2, idcourse);
-//                int idusers = au.getUser().getIduser();
-//                preparedStatement.setInt(3, idusers);
-//                
-//                preparedStatement.addBatch();
-//                
-//            } catch (SQLException ex) {
-//
-//                if (ex instanceof SQLIntegrityConstraintViolationException) {
-//                } else {
-//                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-//                            .getName()).log(Level.SEVERE, null, ex);
-//                }
-//
-//            } finally {
-//                try {
-//                    conn.close();
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        }
-//        return true;
-//
-//    }
     @Override
     public boolean markAssignmentPerStudentPerCourse(int idassignment, int idstudent, int idcourse, int mark) {
-        List<AssignmentUser> assignmentusers = getAssignmentsPerStudentPerCourse(idcourse);
-        for (int i = 0; i < assignmentusers.size(); i++) {
-            if (assignmentusers.get(i).getAssignment().getIdassignment() == idassignment
-                    && assignmentusers.get(i).getUser().getIduser() == idstudent) {
-                if (assignmentusers.get(i).isSubmitted()) {
-                    Connection conn = dbutils.createConnection();
-                    String sql = " update assignmentcoursestudent set mark=?;"
-                            + "where assignmentcoursestudent.idassignment=? and"
-                            + " assignmentcoursestudent.idstudent=? and "
-                            + "assignmentcoursestudent.idcourse=?  "
-                            ;
-                    try {
-                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                        preparedStatement.setInt(1, mark);
-                        preparedStatement.setInt(2, idassignment);
-                        preparedStatement.setInt(3, idstudent);
-                        preparedStatement.setInt(4, idcourse);
+//        List<AssignmentUser> assignmentusers = getAssignmentsPerStudentPerCourse(idcourse);
+//        for (int i = 0; i < assignmentusers.size(); i++) 
+//            if (assignmentusers.get(i).getAssignment().getIdassignment() == idassignment
+//                    && assignmentusers.get(i).getUser().getIduser() == idstudent) {
+//                System.out.println("mesaaaaaaa");
+        if (acs.isAssignmentSubmitted(idassignment, idcourse, idstudent)) {
+            if (!acs.isAssignmentMarked(idassignment, idcourse, idstudent)) {
+                Connection conn = dbutils.createConnection();
+                String sql = " update assignmentcoursestudent set mark=? "
+                        + "where assignmentcoursestudent.idassignment=? and"
+                        + " assignmentcoursestudent.idusers=? and "
+                        + "assignmentcoursestudent.idcourse=?  and mark=0";
+                try {
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setInt(1, mark);
+                    preparedStatement.setInt(2, idassignment);
+                    preparedStatement.setInt(3, idstudent);
+                    preparedStatement.setInt(4, idcourse);
 
-                        preparedStatement.executeUpdate();
-                        System.out.println("Assignment marked.");
+                    preparedStatement.executeUpdate();
+                    System.out.println("Assignment marked.");
 
-                    } catch (SQLException ex) {
+                } catch (SQLException ex) {
 
-                        if (ex instanceof SQLIntegrityConstraintViolationException) {
-                            System.out.println("The assignment is already marked.");
+                    if (ex instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("The assignment is already marked.");
 
-                        } else {
-                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                                    .getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } finally {
-                        try {
-                            conn.close();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    } else {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    return true;
+                } finally {
+                    try {
+                        conn.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+
+                return true;
             } else {
-                if (i == assignmentusers.size() - 1) {
-                    System.out.println("No such record.");
-                }
+                System.out.println("The assignment is already marked.");
+                return false;
             }
+
+        } else {
+            System.out.println("No such assignment has been submitted");
+            return false;
         }
-        return true;
     }
 
 }

@@ -27,7 +27,7 @@ public class dbutils {
             return conn;
             
         } catch (SQLException ex) {
-            Logger.getLogger(dbutils.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(dbutils.class.getName()).log(Level.SEVERE,null, ex);
         }
         
         return conn;}

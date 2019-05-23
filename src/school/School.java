@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import model.Assignment;
+import model.AssignmentCourseStudent;
 import model.Course;
 import model.Schedule;
 import model.User;
@@ -110,10 +111,21 @@ public class School {
 //        t.updateAssignmentCourseStudentTable(1);
 //            t.markAssignmentPerStudentPerCourse(3,1,2,80);
 //        st.viewAssignmentsPerCoursePerStudent(1);
-//        st.submitAssignment(3, 13, 2);
+//        st.submitAssignment(3, 13, 3);
 //        st.viewDailySchedule(1, "2019-05-20");
 //        st.viewSubmissionDatesOfAssignmentsPerCourse(1);
-        t.markAssignmentPerStudentPerCourse(3, 13, 2, 99);
+//        t.markAssignmentPerStudentPerCourse(3, 13, 13, 99);
+//        h1.removeStudentFromCourse(13, 2);
+//        h1.appointAssignmentsToCourse(8, 2);
+//        h1.appointStudentsToCourse(15, 2);
+//        st.submitAssignment(8, 15, 2);
+        t.markAssignmentPerStudentPerCourse(3, 2, 45, 100);
+//        System.out.println(t.getAssignmentsPerStudentPerCourse(2));
+        AssignmentCourseStudent acs = new AssignmentCourseStudent();
+//        System.out.println(acs.listOfSubmittedAssignments());
+//        System.out.println(acs.isAssignmentSubmitted(3, 2, 1));
+//        System.out.println(acs.getAssignmentCourseStudentFromIds(3,2,1));
+//        System.out.println(acs.isAssignmentMarked(3, 2, 1));
     }
 
    
