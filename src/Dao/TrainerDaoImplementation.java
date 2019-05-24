@@ -304,7 +304,7 @@ public class TrainerDaoImplementation implements TrainerDao {
                 String sql = " update assignmentcoursestudent set mark=? "
                         + "where assignmentcoursestudent.idassignment=? and"
                         + " assignmentcoursestudent.idusers=? and "
-                        + "assignmentcoursestudent.idcourse=?  and mark=0";
+                        + "assignmentcoursestudent.idcourse=? ";
                 try {
                     PreparedStatement preparedStatement = conn.prepareStatement(sql);
                     preparedStatement.setInt(1, mark);

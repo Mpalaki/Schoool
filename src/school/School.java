@@ -140,6 +140,7 @@ public class School {
 //        lp.displayInitialStudentMenuOptions();
         /////////////////// APPOINT SCHEDULE TO COURSE, MISSING CHECK FOR COURSE ////////////////
                 lp.welcomePage();
+                
 //        t.viewCoursesPerTrainer(4);
 //        h1.appointTrainersToCourse(4, 1);
 //        System.out.println(st.getAssignmentsPerCoursePerStudent(2));

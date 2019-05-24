@@ -210,7 +210,7 @@ public class AssignmentCourseStudent {
 
     public boolean isAssignmentMarked(int idassignment, int idcourse, int idstudent) {
         AssignmentCourseStudent acs = getAssignmentCourseStudentFromIds(idassignment, idcourse, idstudent);
-        if (acs.getMark() < 0) {
+        if (acs.getMark()==0) {
             return false;
         } else {
             return true;

@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Assignment;
+import model.Course;
 import model.User;
 
 /**
@@ -41,14 +43,14 @@ public class LoginPage {
             String enteredpassword = in.next();
             if (password.equals(enteredpassword)) {
                 System.out.println("Welcome " + user.getFirstname() + "!");
-                displayMenuOptionsAccordingToRole(user.getIdrole(), user);
+                displayMenuOptionsAccordingToRole(user.getIdrole(), user.getIduser());
             } else {
                 System.out.println("Invalid password.");
             }
         }
     }
 
-    public void displayInitialStudentMenuOptions(User user) {
+    public void displayInitialStudentMenuOptions(int iduser) {
         Scanner in = new Scanner(System.in);
         String[] menuoptions = {"View daily schedule per courses.(Type 1)",
             "See the dates of submission of the Assignments per Course.(Type 2)",
@@ -59,14 +61,14 @@ public class LoginPage {
         }
         try {
             int selection = in.nextInt();
-            callRelevantMethod(selection, user);
+            callRelevantMethod(selection, iduser);
         } catch (Exception e) {
-            displayInitialStudentMenuOptions(user);
+            displayInitialStudentMenuOptions(iduser);
             in.next();
         }
     }
 
-    public void displayInitialTrainerMenuOptions(User user) {
+    public void displayInitialTrainerMenuOptions(int iduser) {
         Scanner in = new Scanner(System.in);
         String[] menuoptions = {"View all the Courses you are enrolled in.(Type 1)",
             "View all the Students per Course.(Type 2)",
@@ -78,14 +80,15 @@ public class LoginPage {
         }
         try {
             int selection = in.nextInt();
-            callRelevantMethodTrainer(selection, user.getIduser());
+            callRelevantMethodTrainer(selection, iduser);
         } catch (Exception e) {
-            displayInitialTrainerMenuOptions(user);
+            displayInitialTrainerMenuOptions(iduser);
             in.next();
         }
     }
 
-    public void displayInitialHeadmasterMenuOptions(User user) {
+    public void displayInitialHeadmasterMenuOptions(int iduser) {
+        Scanner in = new Scanner(System.in);
         String[] menuoptions = {
             "Creat.(Type 1)",
             "View.(Type 2)",
@@ -95,17 +98,12 @@ public class LoginPage {
         for (int i = 0; i < menuoptions.length; i++) {
             System.out.println(i + 1 + ". " + menuoptions[i]);
         }
-    }
-
-    public void selectSecondaryHeadmasterMenuOptions(int select) {
-        if (select == 1) {
-            displayCreateHeadmasterMenuOptions();
-        } else if (select == 1) {
-            displayViewHeadmasterMenuOptions();
-        } else if (select == 1) {
-            displayUpdateHeadmasterMenuOptions();
-        } else if (select == 1) {
-            displayDeleteHeadmasterMenuOptions();
+        try {
+            int selection = in.nextInt();
+            callRelevantMethodHeadm(selection, iduser);
+        } catch (Exception e) {
+            displayInitialHeadmasterMenuOptions(iduser);
+            in.next();
         }
     }
 
@@ -125,39 +123,39 @@ public class LoginPage {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void displayMenuOptionsAccordingToRole(int idrole, User user) {
+    private void displayMenuOptionsAccordingToRole(int idrole, int iduser) {
         if (idrole == 1) {
-            displayInitialStudentMenuOptions(user);
+            displayInitialStudentMenuOptions(iduser);
         } else if (idrole == 2) {
-            displayInitialTrainerMenuOptions(user);
+            displayInitialTrainerMenuOptions(iduser);
         } else {
-            displayInitialHeadmasterMenuOptions(user);
+            displayInitialHeadmasterMenuOptions(iduser);
         }
     }
 
     StudentDaoImplementation st = new StudentDaoImplementation();
 
-    private void callRelevantMethod(int selection, User user) {
+    private void callRelevantMethod(int selection, int iduser) {
         if (selection == 1) {
-            askStudentForDate(user);
+            askStudentForDate(iduser);
         } else if (selection == 2) {
-            st.viewSubmissionDatesOfAssignmentsPerCourse(user.getIduser());
+            st.viewSubmissionDatesOfAssignmentsPerCourse(iduser);
         } else if (selection == 3) {
-            askStudentforAssignmentId(user);
+            askStudentforAssignmentId(iduser);
         } else {
-            displayInitialStudentMenuOptions(user);
+            displayInitialStudentMenuOptions(iduser);
         }
     }
 
-    private void askStudentForDate(User user) {
+    private void askStudentForDate(int iduser) {
         Scanner in = new Scanner(System.in);
         System.out.println("Please enter the date of the course(yyyy-MM-dd). ");
         int x = 1;
         while (x == 1) {
             try {
                 String date = in.next();
-                Date sqldate = java.sql.Date.valueOf(dateInput(date, user));
-                st.viewDailySchedule(user.getIduser(), sqldate);
+                Date sqldate = java.sql.Date.valueOf(dateInput(date, iduser));
+                st.viewDailySchedule(iduser, sqldate);
                 x = 2;
             } catch (Exception e) {
                 System.out.println("you input an invalid date. Please input valid date(yyyy-MM-dd)");
@@ -172,8 +170,8 @@ public class LoginPage {
 //        int selection = in.nextInt();
 //        st.viewSubmissionDatesOfAssignmentsPerCourse(user.getIduser());
 //    }
-    private void askStudentforAssignmentId(User user) {
-        st.viewAssignmentsPerCoursePerStudent(user.getIduser());
+    private void askStudentforAssignmentId(int iduser) {
+        st.viewAssignmentsPerCoursePerStudent(iduser);
         Scanner in = new Scanner(System.in);
         System.out.println("Please enter ID for the assignment you wish to submit. ");
         inNextNotInt(in);
@@ -181,10 +179,10 @@ public class LoginPage {
         System.out.println("Please enter ID for the course of the assignment.");
         inNextNotInt(in);
         int idcourse = in.nextInt();
-        st.submitAssignment(idassignment, user.getIduser(), idcourse);
+        st.submitAssignment(idassignment, iduser, idcourse);
     }
 
-    public LocalDate dateInput(String userInput, User user) {
+    public LocalDate dateInput(String userInput, int iduser) {
 //        java.sql.Date sqlDate = null;
 //        try {
 //            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
@@ -200,7 +198,6 @@ public class LoginPage {
 
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse(userInput, dateFormat);
-        System.out.println(date);
         return date;
 
     }
@@ -221,12 +218,12 @@ public class LoginPage {
         } else if (selection == 2) {
             askTrainerForCourseID(iduser);
         } else if (selection == 3) {
-            askTrainerforCourseId(iduser);
+            askTrainerforCourseIdView(iduser);
         } else if (selection == 4) {
             askTrainerforCourseIdMark(iduser);
         } else {
             User user = hm1.getUserById(iduser);
-            displayInitialTrainerMenuOptions(user);
+            displayInitialTrainerMenuOptions(iduser);
         }
     }
 
@@ -239,12 +236,180 @@ public class LoginPage {
         t.viewStudentsPerCourse(iduser, idcourse);
     }
 
-    private void askTrainerforCourseId(int iduser) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void askTrainerforCourseIdView(int iduser) {
+        t.viewCoursesPerTrainer(iduser);
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter ID for the course of which the  assignments per Student  you want to see. ");
+        inNextNotInt(in);
+        int idcourse = in.nextInt();
+        t.viewAssignmentsPerStudentPerCourse(iduser, idcourse);
     }
 
     private void askTrainerforCourseIdMark(int iduser) {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter ID for course of the assignment you wish to submit. ");
+        t.viewCoursesPerTrainer(iduser);
+        inNextNotInt(in);
+        int idcourse = in.nextInt();
+        t.viewAssignmentsPerStudentPerCourse(iduser, idcourse);
+        System.out.println("Please enter ID of the assignment.");
+        inNextNotInt(in);
+        int idassignment = in.nextInt();
+        System.out.println("Please enter ID of the student.");
+        inNextNotInt(in);
+        int idstudent = in.nextInt();
+        System.out.println("Please enter your mark(numerical).");
+        inNextNotInt(in);
+        int idmark = in.nextInt();
+        t.markAssignmentPerStudentPerCourse(idassignment, idstudent, idcourse, idmark);
+    }
+
+    private void callRelevantMethodHeadm(int selection, int iduser) {
+        if (selection == 1) {
+            callCreateMethods(iduser);
+        } else if (selection == 2) {
+            callViewMethods(iduser);
+        } else if (selection == 3) {
+            callUpdateMethods(iduser);
+        } else if (selection == 4) {
+            callRemoveMethods(iduser);
+        } else {
+            User user = hm1.getUserById(iduser);
+            displayInitialHeadmasterMenuOptions(iduser);
+        }
+    }
+
+    private void callCreateMethods(int iduser) {
+        Scanner in = new Scanner(System.in);
+        String[] menuoptions = {"Insert a student.(Type 1)",
+            "Insert a trainer.(Type 2)",
+            "Insert a course.(Type 3)",
+            "Insert an assignment.(Type 4)",
+            "Appoint student to course.(Type 5)",
+            "Appoint trainer to course.(Type 6)",
+            "Appoint assignment to course.(Type 7)",
+            "Schedule a day for course.(Type 8)",};
+        System.out.println("Please select an option from the below listed:");
+        for (int i = 0; i < menuoptions.length; i++) {
+            System.out.println(i + 1 + ". " + menuoptions[i]);
+        }
+        try {
+            int selection = in.nextInt();
+            callRelevantCreateMethod(selection, iduser);
+        } catch (Exception e) {
+            callCreateMethods(iduser);
+            in.next();
+        }
+    }
+
+    private void callViewMethods(int iduser) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void callUpdateMethods(int iduser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void callRemoveMethods(int iduser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void callRelevantCreateMethod(int selection, int iduser) {
+        if (selection == 1) {
+            insertStudent();
+        } else if (selection == 2) {
+            insertTrainer();
+        } else if (selection == 3) {
+            insertCourse();
+        } else if (selection == 4) {
+            insertAs();
+        } else if (selection == 5) {
+            appointStudentToCourse();
+        } else if (selection == 3) {
+            callUpdateMethods(iduser);
+        } else if (selection == 4) {
+            callRemoveMethods(iduser);
+        } else {
+            User user = hm1.getUserById(iduser);
+            callCreateMethods(iduser);
+        }
+    }
+
+    private void insertStudent() {
+        Scanner in = new Scanner(System.in);
+        User student = new User();
+        System.out.println("Please enter first name.");
+        String fn = in.next();
+        student.setFirstname(fn);
+        System.out.println("Please enter last name.");
+        String ln = in.next();
+        student.setLastname(ln);
+        System.out.println("Please enter username.");
+        String un = in.next();
+        student.setUsername(un);
+        System.out.println("Please enter password.");
+        String pw = in.next();
+        student.setPassword(pw);
+        student.setIdrole(1);
+        hm1.insertStudent(student);
+    }
+
+    private void insertTrainer() {
+        Scanner in = new Scanner(System.in);
+        User trainer = new User();
+        System.out.println("Please enter first name.");
+        String fn = in.next();
+        trainer.setFirstname(fn);
+        System.out.println("Please enter last name.");
+        String ln = in.next();
+        trainer.setLastname(ln);
+        System.out.println("Please enter username.");
+        String un = in.next();
+        trainer.setUsername(un);
+        System.out.println("Please enter password.");
+        String pw = in.next();
+        trainer.setPassword(pw);
+        trainer.setIdrole(2);
+        hm1.insertTrainer(trainer);
+    }
+
+    private void insertCourse() {
+        Scanner in = new Scanner(System.in);
+        Course course = new Course();
+        System.out.println("Please enter course title.");
+        String ct = in.next();
+        course.setCourse_title(ct);
+        hm1.insertCourse(course);
+    }
+
+    private void insertAs() {
+        Scanner in = new Scanner(System.in);
+        Assignment as = new Assignment();
+        System.out.println("Please enter assignment title.");
+        String at = in.next();
+        as.setTitle(at);
+        System.out.println("Please enter submission date and time.");
+        String at1 = in.next();
+        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2007-09-23 10:10:10.0");
+        as.setSubmission_date_time(timestamp);
+        hm1.insertAssignment(as);
+    }
+
+    private void appointStudentToCourse() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter course id.");
+        hm1.viewCourses();
+        try {
+            int idcourse = in.nextInt();
+            System.out.println("Please enter student id.");
+            hm1.viewStudents();
+            int idstudent = in.nextInt();
+            hm1.appointStudentsToCourse(idstudent, idcourse);
+        } catch (Exception e) {
+            appointStudentToCourse();
+            in.next();
+        }
+
     }
 
 }
