@@ -72,7 +72,7 @@ public class StudentDaoImplementation implements StudentDao {
             if (schedules.isEmpty()) {
                 System.out.println("No scheduled courses for the requested date.");
             } else {
-                System.out.println("Your scheduled courses for date: '" + date + "' are the below:");
+                System.out.println("Your scheduled courses for that date  are the below:");
                 for (int i = 0; i < schedules.size(); i++) {
                     Course c1 = hm.getCourseById(schedules.get(i).getIdcourse());
                     System.out.println(i + 1 + ". ID: " + schedules.get(i).getIdcourse() + "; Title: "

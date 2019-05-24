@@ -5,6 +5,7 @@
  */
 package Dao;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import model.Assignment;
@@ -102,12 +103,12 @@ public interface HeadmasterDaoInterface {
     public boolean removeAssignmentFromCourse(int idassignment, int idcourse);
 
     /////////////////////METHODS FOR SCHEDULE TABLE://///////////////////////////
-    public boolean scheduleDayToCourse(Course course, String date);
+    public boolean scheduleDayToCourse(Course course, Date date);
 
     public List<Schedule> viewSchedulePerCourse(Course course);
 
     public List<Schedule> getSchedulePerCourse(Course course);
 
-    public boolean removeScheduleFromCourse(Course course, String date);
+    public boolean removeScheduleFromCourse(Course course, Date date);
 
 }

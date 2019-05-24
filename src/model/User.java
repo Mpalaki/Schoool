@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import userinterface.LoginPage;
 import utils.dbutils;
 
 /**
@@ -162,20 +163,20 @@ public class User {
         for (String un : allUsers.keySet()) {
             if (un.equals(username)) {
                 user = allUsers.get(un);
-            } 
+            }
         }
         return user;
     }
 
-    public boolean isUsernameValid(String username) {
-        Map<String, User> allUsers = getUsers();
-        if (allUsers.containsKey(username)) {
-            return true;
-        } else {
-            System.out.println("Invalid username");
-            return false;
-        }
-    }
+//    public boolean isUsernameValid(String username) {
+//        Map<String, User> allUsers = getUsers();
+//        if (allUsers.containsKey(username)) {
+//            return true;
+//        } else {
+//            System.out.println("Invalid username");
+//            return false;
+//        }
+//    }
 
     public Map<String, User> getUsers() {
         Connection conn = dbutils.createConnection();
@@ -215,14 +216,16 @@ public class User {
 
         return AllUsers;
     }
-    
-    public int checkUserRole(User user){
-        if(user.getIdrole()==1){ return 1;}
-        else if(user.getIdrole()==2){ return 2;}
-        else {return 3;}}
-    
-    
-    
+
+    public int checkUserRole(User user) {
+        if (user.getIdrole() == 1) {
+            return 1;
+        } else if (user.getIdrole() == 2) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
 
 //
 }

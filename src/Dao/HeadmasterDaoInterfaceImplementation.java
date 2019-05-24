@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,9 +38,8 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
     public HeadmasterDaoInterfaceImplementation() {
     }
-    
-//    TrainerDaoImplementation td = new TrainerDaoImplementation();
 
+//    TrainerDaoImplementation td = new TrainerDaoImplementation();
     /////////////////////METHODS FOR COURSES://///////////////////////////
     @Override
     public boolean insertCourse(Course course) {
@@ -1271,7 +1271,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
                 System.out.println("The list of trainers for course: '" + course.getCourse_title() + "' is the below:");
                 for (int i = 0; i < trainers.size(); i++) {
-                    System.out.println(i + 1 + ". " + trainers.get(i).getFirstname() + " " + trainers.get(i).getLastname());
+                    System.out.println(i + 1 + ". " + "ID: " + trainers.get(i).getIduser() + "; " + trainers.get(i).getFirstname() + " " + trainers.get(i).getLastname());
                 }
 
             } catch (SQLException ex) {
@@ -1555,7 +1555,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
                 System.out.println("The list of students for course: '" + course.getCourse_title() + "' is the below:");
                 for (int i = 0; i < students.size(); i++) {
-                    System.out.println(i + 1 + ". " + students.get(i).getFirstname() + " " + students.get(i).getLastname());///////να το φτιαξω//////////
+                    System.out.println(i + 1 + ". " + "ID: " + students.get(i).getIduser() + "; " + students.get(i).getFirstname() + " " + students.get(i).getLastname());///////να το φτιαξω//////////
                 }
 
             } catch (SQLException ex) {
@@ -1576,55 +1576,55 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     }
 
     @Override
-    public boolean scheduleDayToCourse(Course course, String date) {
-        try {
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
-            Calendar c = Calendar.getInstance();
-            c.setTime(utilDate);
-            c.add(Calendar.DATE, 1);
-            utilDate = c.getTime();
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-            Schedule schedule = new Schedule(course.getIdcourse(), sqlDate);
-            Connection conn = dbutils.createConnection();
-            String sql = " INSERT INTO schedules (idcourse,working_day)"
-                    + "VALUES (?,?);";
-            List<Schedule> schedules = getSchedulePerCourse(course);
-            if (!schedules.contains(schedule)) {
-                try {
+    public boolean scheduleDayToCourse(Course course, Date sqlDate) {
+//        try {
+//            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date);
+//            Calendar c = Calendar.getInstance();
+//            c.setTime(utilDate);
+//            c.add(Calendar.DATE, 1);
+//            utilDate = c.getTime();
+//            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        Schedule schedule = new Schedule(course.getIdcourse(), sqlDate);
+        Connection conn = dbutils.createConnection();
+        String sql = " INSERT INTO schedules (idcourse,working_day)"
+                + "VALUES (?,?);";
+        List<Schedule> schedules = getSchedulePerCourse(course);
+        if (!schedules.contains(schedule)) {
+            try {
 
-                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                    preparedStatement.setInt(1, course.getIdcourse());
-                    preparedStatement.setDate(2, sqlDate);
-                    preparedStatement.executeUpdate();
-                    System.out.println("Successful appointment.");
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, course.getIdcourse());
+                preparedStatement.setDate(2, sqlDate);
+                preparedStatement.executeUpdate();
+                System.out.println("Successful appointment.");
 
-                } catch (SQLException ex) {
+            } catch (SQLException ex) {
 
-                    if (ex instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("The requested course is already scheduled for the requested date.");
-                    } else {
-                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                } finally {
-                    try {
-                        conn.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                if (ex instanceof SQLIntegrityConstraintViolationException) {
+                    System.out.println("The requested course is already scheduled for the requested date.");
+                } else {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
-                return true;
 
-            } else {
-                System.out.println("The requested course is already scheduled for the requested date.");
-                return false;
-
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-        } catch (ParseException ex) {
-            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+            return true;
+
+        } else {
+            System.out.println("The requested course is already scheduled for the requested date.");
+            return false;
+
         }
-        return true;
+
+//        catch (ParseException ex) {
+//            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @Override
@@ -1709,54 +1709,47 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
     }
 
     @Override
-    public boolean removeScheduleFromCourse(Course course, String date) {
+    public boolean removeScheduleFromCourse(Course course, Date date) {
         Connection conn = dbutils.createConnection();
         String sql = " delete from schedules where idcourse=? and working_day=?";
         List<Schedule> schedules = getSchedulePerCourse(course);// returns all schedules
-        Map<Integer, Course> courses = getCourses();// returns all courses
-        if (courses.containsKey(course.getIdcourse())) {
+        
 
-            for (int i = 0; i < schedules.size(); i++) {
-                Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String s1 = formatter.format(schedules.get(i).getWorking_Day()).substring(0, 10);
-                if (course.getIdcourse() == schedules.get(i).getIdcourse()
-                        && s1.equals(date)) {
-                    try {
-                        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                        preparedStatement.setInt(1, course.getIdcourse());
-                        preparedStatement.setDate(2, schedules.get(i).getWorking_Day());
-                        preparedStatement.executeUpdate();
-                        System.out.println("Successful Deletion.");
+        for (int i = 0; i < schedules.size(); i++) {
+//                Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                String s1 = formatter.format(schedules.get(i).getWorking_Day()).substring(0, 10);
+            if (course.getIdcourse() == schedules.get(i).getIdcourse()) {
+                try {
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setInt(1, course.getIdcourse());
+                    preparedStatement.setDate(2, date);
+                    preparedStatement.executeUpdate();
+                    System.out.println("The requested date is removed from the database.");
 
-                    } catch (SQLException ex) {
+                } catch (SQLException ex) {
 
-                        if (ex instanceof SQLIntegrityConstraintViolationException) {
-                            System.out.println("SQLIntegrityConstraintViolationException");
-                        } else {
-                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                                    .getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    } finally {
-                        try {
-                            conn.close();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    if (ex instanceof SQLIntegrityConstraintViolationException) {
+                        System.out.println("SQLIntegrityConstraintViolationException");
+                    } else {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
-                    return true;
 
-                } else {
-                    if (i == (schedules.size() - 1)) {
-                        System.out.println("The requested course is not scheduled for " + date);
-                        return false;
+                } finally {
+                    try {
+                        conn.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }
-        } else {
-            System.out.println("No such course record");
-            return false;
+                return true;
 
+            } else {
+                if (i == (schedules.size() - 1)) {
+                    System.out.println("The requested course is not scheduled for this date ");
+                    return false;
+                }
+            }
         }
         return true;
     }
