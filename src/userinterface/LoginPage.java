@@ -7,6 +7,7 @@ package userinterface;
 
 import Dao.HeadmasterDaoInterfaceImplementation;
 import Dao.StudentDaoImplementation;
+import Dao.TrainerDaoImplementation;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +40,7 @@ public class LoginPage {
             System.out.println("Please enter your password.");
             String enteredpassword = in.next();
             if (password.equals(enteredpassword)) {
-                System.out.println("Welcome "+user.getFirstname()+"!");
+                System.out.println("Welcome " + user.getFirstname() + "!");
                 displayMenuOptionsAccordingToRole(user.getIdrole(), user);
             } else {
                 System.out.println("Invalid password.");
@@ -66,6 +67,7 @@ public class LoginPage {
     }
 
     public void displayInitialTrainerMenuOptions(User user) {
+        Scanner in = new Scanner(System.in);
         String[] menuoptions = {"View all the Courses you are enrolled in.(Type 1)",
             "View all the Students per Course.(Type 2)",
             "View all the Assignments per Student per Course.(Type 3)",
@@ -73,6 +75,13 @@ public class LoginPage {
         System.out.println("Please select an option from the below listed:");
         for (int i = 0; i < menuoptions.length; i++) {
             System.out.println(i + 1 + ". " + menuoptions[i]);
+        }
+        try {
+            int selection = in.nextInt();
+            callRelevantMethodTrainer(selection, user.getIduser());
+        } catch (Exception e) {
+            displayInitialTrainerMenuOptions(user);
+            in.next();
         }
     }
 
@@ -201,6 +210,41 @@ public class LoginPage {
             System.out.println("Enter numerical.");
             in.next();
         }
+    }
+    TrainerDaoImplementation t = new TrainerDaoImplementation();
+
+    HeadmasterDaoInterfaceImplementation hm1 = new HeadmasterDaoInterfaceImplementation();
+
+    private void callRelevantMethodTrainer(int selection, int iduser) {
+        if (selection == 1) {
+            t.viewCoursesPerTrainer(iduser);
+        } else if (selection == 2) {
+            askTrainerForCourseID(iduser);
+        } else if (selection == 3) {
+            askTrainerforCourseId(iduser);
+        } else if (selection == 4) {
+            askTrainerforCourseIdMark(iduser);
+        } else {
+            User user = hm1.getUserById(iduser);
+            displayInitialTrainerMenuOptions(user);
+        }
+    }
+
+    private void askTrainerForCourseID(int iduser) {
+        t.viewCoursesPerTrainer(iduser);
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter ID for the course of which the students you want to see. ");
+        inNextNotInt(in);
+        int idcourse = in.nextInt();
+        t.viewStudentsPerCourse(iduser, idcourse);
+    }
+
+    private void askTrainerforCourseId(int iduser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void askTrainerforCourseIdMark(int iduser) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
