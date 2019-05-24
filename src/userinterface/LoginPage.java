@@ -325,10 +325,12 @@ public class LoginPage {
             insertAs();
         } else if (selection == 5) {
             appointStudentToCourse();
-        } else if (selection == 3) {
-            callUpdateMethods(iduser);
-        } else if (selection == 4) {
-            callRemoveMethods(iduser);
+        } else if (selection == 6) {
+            appointTrainerToCourse();
+        } else if (selection == 7) {
+            appointAssToCourse();
+        } else if (selection == 8) {
+            ScheduleDayToCourse();
         } else {
             User user = hm1.getUserById(iduser);
             callCreateMethods(iduser);
@@ -410,6 +412,54 @@ public class LoginPage {
             in.next();
         }
 
+    }
+
+    private void appointTrainerToCourse() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter course id.");
+        hm1.viewCourses();
+        try {
+            int idcourse = in.nextInt();
+            System.out.println("Please enter trainer id.");
+            hm1.viewTrainers();
+            int idstudent = in.nextInt();
+            hm1.appointTrainersToCourse(idstudent, idcourse);
+        } catch (Exception e) {
+            appointTrainerToCourse();
+            in.next();
+        }
+    }
+
+    private void appointAssToCourse() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter course id.");
+        hm1.viewCourses();
+        try {
+            int idcourse = in.nextInt();
+            System.out.println("Please enter assignment id.");
+            hm1.viewAssignments();
+            int idass = in.nextInt();
+            hm1.appointAssignmentsToCourse(idass, idcourse);
+        } catch (Exception e) {
+            appointAssToCourse();
+            in.next();
+        }
+    }
+
+    private void ScheduleDayToCourse() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter course id.");
+        hm1.viewCourses();
+        try {
+            int idcourse = in.nextInt();
+            Course course = hm1.getCourseById(idcourse);
+            System.out.println("Please enter the date(yyyy-MM-dd).");
+            String date = in.next();
+            hm1.scheduleDayToCourse(course, date);
+        } catch (Exception e) {
+            appointAssToCourse();
+            in.next();
+        }
     }
 
 }
