@@ -135,10 +135,15 @@ public class School {
 //        System.out.println(acs.isAssignmentExistentButNotSubmitted(6, 2, 1));
         User user = new User();
 //        System.out.println(user.getUserByUsername("student2"));
+
         LoginPage lp = new LoginPage();
-        lp.welcomePage();
 //        lp.displayInitialStudentMenuOptions();
         /////////////////// APPOINT SCHEDULE TO COURSE, MISSING CHECK FOR COURSE ////////////////
+                lp.welcomePage();
+//        t.viewCoursesPerTrainer(4);
+//        h1.appointTrainersToCourse(4, 1);
+//        System.out.println(st.getAssignmentsPerCoursePerStudent(2));
+//        t.viewAssignmentsPerStudentPerCourse(4, 1);
     }
 
    

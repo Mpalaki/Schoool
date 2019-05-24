@@ -179,9 +179,9 @@ public class StudentDaoImplementation implements StudentDao {
     public boolean submitAssignment(int idassignment, int idstudent, int idcourse) {
         Assignment assignment = hm.getAssignmentById(idassignment);
         Course course = hm.getCourseById(idcourse);
-        AssignmentCourse ac = new AssignmentCourse(assignment,course);
+        AssignmentCourse ac = new AssignmentCourse(assignment, course);
         List<AssignmentCourse> assignmentscourses = getAssignmentsPerCoursePerStudent(idstudent);
-         if(assignmentscourses.contains(ac)) {
+        if (assignmentscourses.contains(ac)) {
             Connection conn = dbutils.createConnection();
             String sql = "insert into assignmentcoursestudent(idassignment,idcourse,idusers,submitted)\n"
                     + "values(?,?,?,?);";
@@ -199,11 +199,11 @@ public class StudentDaoImplementation implements StudentDao {
 
             } catch (SQLException ex) {
                 if (ex instanceof SQLIntegrityConstraintViolationException) {
-                        System.out.println("The assignment is already submitted.");
-                    } else {
-                        Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                    }
+                    System.out.println("The assignment is already submitted.");
+                } else {
+                    Logger.getLogger(HeadmasterDaoInterfaceImplementation.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
                 return false;
             } finally {
                 try {
@@ -213,8 +213,8 @@ public class StudentDaoImplementation implements StudentDao {
                 }
             }
 
-        }else  {
-             System.out.println("No such assignment is assigned to you.");
+        } else {
+            System.out.println("No such assignment is assigned to you.");
             return false;
         }
     }

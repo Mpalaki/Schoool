@@ -21,16 +21,16 @@ public interface TrainerDao {
 // ii. View all the Students per Course 
 //iii. View all the Assignments per Student per Course 
 // iv. Mark all the Assignments per Student per Course 
-    public List<Course> viewCoursesPerTrainersCourse(int idtrainer);
+    public List<Course> viewCoursesPerTrainer(int idtrainer);
 
-    public List<Course> getCoursesPerTrainersCourse(int idtrainer);
+    public List<Course> getCoursesPerTrainers(int idtrainer);
 
     public List<User> viewStudentsPerCourse(int idtrainer, int idcourse);
 
    
-    public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idcourse);
+    public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idtrainer,int idcourse);
     
-    public List<AssignmentUser> getAssignmentsPerStudentPerCourse(int idcourse);
+    public List<AssignmentUser> getAssignmentsPerStudentPerCourse(int idtrainer, int idcourse);
     
 //    public boolean updateAssignmentCourseStudentTable(int idcourse);
     

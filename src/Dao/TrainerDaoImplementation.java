@@ -31,12 +31,12 @@ public class TrainerDaoImplementation implements TrainerDao {
     HeadmasterDaoInterfaceImplementation hm = new HeadmasterDaoInterfaceImplementation();
 
     @Override
-    public List<Course> viewCoursesPerTrainersCourse(int idtrainer) {
+    public List<Course> viewCoursesPerTrainer(int idtrainer) {
         Connection conn = dbutils.createConnection();
         List<Course> courses = new ArrayList();// αρχικοποιω την λιστα με τa courses
         String sql = "select c.idcourse,c.course_title\n"
                 + "from course c\n"
-                + "inner join usercourse uc\n"
+                + "inner join trainercourse uc\n"
                 + "on uc.idcourse=c.idcourse\n"
                 + "where idusers=?";
         try {
@@ -52,7 +52,7 @@ public class TrainerDaoImplementation implements TrainerDao {
                 courses.add(course);
             }
 
-            System.out.println("The list of courses for trainer: '" + trainer.getFirstname() + " " + trainer.getLastname() + "' is the below:");
+            System.out.println("The list of courses you are enrolled in, is the below:");
             for (int i = 0; i < courses.size(); i++) {
                 System.out.println(i + 1 + ". ID: " + courses.get(i).getIdcourse() + "; Title: " + courses.get(i).getCourse_title());
             }
@@ -71,12 +71,12 @@ public class TrainerDaoImplementation implements TrainerDao {
     }
 
     @Override
-    public List<Course> getCoursesPerTrainersCourse(int idtrainer) {
+    public List<Course> getCoursesPerTrainers(int idtrainer) {
         Connection conn = dbutils.createConnection();
         List<Course> courses = new ArrayList();// αρχικοποιω την λιστα με τa courses
         String sql = "select c.idcourse,c.course_title\n"
                 + "from course c\n"
-                + "inner join usercourse uc\n"
+                + "inner join trainercourse uc\n"
                 + "on uc.idcourse=c.idcourse\n"
                 + "where idusers=?";
         try {
@@ -109,7 +109,7 @@ public class TrainerDaoImplementation implements TrainerDao {
     public List<User> viewStudentsPerCourse(int idtrainer, int idcourse) {
         User trainer = hm.getUserById(idtrainer);// returns object trainer
         List<User> students = null;// initialize list with students
-        List<Course> courses = getCoursesPerTrainersCourse(idtrainer);// returns the courses the trainer is enrolled in
+        List<Course> courses = getCoursesPerTrainers(idtrainer);// returns the courses the trainer is enrolled in
         Course course = hm.getCourseById(idcourse);// returns object course
         if (courses.contains(course)) {// if the given idcourse belongs to a course the trainer is enrolled in
             students = hm.getStudentsPerCourse(idcourse);// returns list with all students for the given course
@@ -130,9 +130,10 @@ public class TrainerDaoImplementation implements TrainerDao {
     }
 
     @Override
-    public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idcourse) {
+    public List<AssignmentUser> viewAssignmentsPerStudentPerCourse(int idtrainer, int idcourse) {
         Connection conn = dbutils.createConnection();
-        Map<Integer, Course> allCourses = hm.getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        Course course = hm.getCourseById(idcourse);
+        List<Course> allCourses = getCoursesPerTrainers(idtrainer);// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
         List<AssignmentUser> assignmentusers = new ArrayList();// αρχικοποιω την λιστα με τους assignmentusers
         String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name,b.mark,b.submitted\n"
                 + "from assignment a\n"
@@ -148,13 +149,13 @@ public class TrainerDaoImplementation implements TrainerDao {
                 + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "where c.idcourse=?\n"
                 + "order by c.idcourse";
-        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+        if (allCourses.contains(course)) { // αν οντως υπαρχει το course που ζητησε
             try {
                 PreparedStatement pst = conn.prepareStatement(sql);
                 ResultSet rs = null;
                 pst.setInt(1, idcourse);
                 rs = pst.executeQuery();
-                Course course = hm.getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+//                Course course = hm.getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
                 while (rs.next()) {
                     AssignmentUser au = new AssignmentUser();
                     User student = new User();
@@ -210,11 +211,14 @@ public class TrainerDaoImplementation implements TrainerDao {
 
         return assignmentusers;
     }
+    
+    
 
     @Override
-    public List<AssignmentUser> getAssignmentsPerStudentPerCourse(int idcourse) {
+    public List<AssignmentUser> getAssignmentsPerStudentPerCourse(int idtrainer, int idcourse) {
         Connection conn = dbutils.createConnection();
-        Map<Integer, Course> allCourses = hm.getCourses();// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
+        Course course = hm.getCourseById(idcourse);
+        List<Course> allCourses = getCoursesPerTrainers(idtrainer);// καλω την getcourses για να ελεγξω αν υπαρχει το course που ζηταει
         List<AssignmentUser> assignmentusers = new ArrayList();// αρχικοποιω την λιστα με τους assignmentusers
         String sql = "select c.idcourse,c.course_title,a.idassignment,a.assignment_title,a.submission_date_time,u.idusers,u.first_name,u.last_name,b.mark,b.submitted\n"
                 + "from assignment a\n"
@@ -230,13 +234,13 @@ public class TrainerDaoImplementation implements TrainerDao {
                 + "on b.idusers=u.idusers and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "where c.idcourse=?\n"
                 + "order by c.idcourse";
-        if (allCourses.containsKey(idcourse)) { // αν οντως υπαρχει το course που ζητησε
+        if (allCourses.contains(course)) { // αν οντως υπαρχει το course που ζητησε
             try {
                 PreparedStatement pst = conn.prepareStatement(sql);
                 ResultSet rs = null;
                 pst.setInt(1, idcourse);
                 rs = pst.executeQuery();
-                Course course = hm.getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
+//                Course course = hm.getCourseById(idcourse); // καλω την getCourseById που επιστρεφει το course object για το id pou zitise
                 while (rs.next()) {
                     AssignmentUser au = new AssignmentUser();
                     User student = new User();

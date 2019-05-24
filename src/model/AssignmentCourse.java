@@ -63,8 +63,7 @@ public class AssignmentCourse {
         int hash = 5;
         hash = 17 * hash + Objects.hashCode(this.assignment);
         hash = 17 * hash + Objects.hashCode(this.course);
-        hash = 17 * hash + this.mark;
-        hash = 17 * hash + (this.submitted ? 1 : 0);
+
         return hash;
     }
 
@@ -80,12 +79,7 @@ public class AssignmentCourse {
             return false;
         }
         final AssignmentCourse other = (AssignmentCourse) obj;
-        if (this.mark != other.mark) {
-            return false;
-        }
-        if (this.submitted != other.submitted) {
-            return false;
-        }
+        
         if (!Objects.equals(this.assignment, other.assignment)) {
             return false;
         }

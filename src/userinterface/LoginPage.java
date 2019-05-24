@@ -39,6 +39,7 @@ public class LoginPage {
             System.out.println("Please enter your password.");
             String enteredpassword = in.next();
             if (password.equals(enteredpassword)) {
+                System.out.println("Welcome "+user.getFirstname()+"!");
                 displayMenuOptionsAccordingToRole(user.getIdrole(), user);
             } else {
                 System.out.println("Invalid password.");
