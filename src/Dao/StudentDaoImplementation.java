@@ -11,22 +11,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Assignment;
 import model.AssignmentCourse;
-import model.AssignmentUser;
 import model.Course;
 import model.Schedule;
 import model.User;
-import model.UserCourse;
 import utils.dbutils;
 
 /**
@@ -143,7 +136,7 @@ public class StudentDaoImplementation implements StudentDao {
             } else {
                 System.out.println("The list of your assignemnts per course is the below:");
                 for (int i = 0; i < assignmentcourses.size(); i++) {
-                    System.out.println(i + 1 +"."+ " Submission datetime: " + assignmentcourses.get(i).getAssignment().getSubmission_date_time()
+                    System.out.println(i + 1 + "." + " Submission datetime: " + assignmentcourses.get(i).getAssignment().getSubmission_date_time()
                             + ". Assignment ID: " + assignmentcourses.get(i).getAssignment().getIdassignment()
                             + ", Assignment title: " + assignmentcourses.get(i).getAssignment().getTitle() + ", "
                             + "Course ID: " + assignmentcourses.get(i).getCourse().getIdcourse()
@@ -262,17 +255,6 @@ public class StudentDaoImplementation implements StudentDao {
             if (assignmentcourses.isEmpty()) {
                 System.out.println("No assignments for you. ");
 
-//                List assignments = hm.getAssignmentsPerCourse(course.getIdcourse());// returns all assignments for the course
-//                if (assignments.isEmpty()) {
-//                    List students = hm.getStudentsPerCourse(course.getIdcourse());// returns all students for the course
-//                    if (students.isEmpty()) {
-//                        System.out.println("No assignments, neither any students appointed to this course.");
-//                    } else {
-//                        System.out.println("No assignments appointed to this course.");
-//                    }
-//                } else {
-//                    System.out.println("No students appointed to this course");
-//                }
             } else {
                 System.out.println("The list of your assignemnts per courses is the below:");
                 for (int i = 0; i < assignmentcourses.size(); i++) {

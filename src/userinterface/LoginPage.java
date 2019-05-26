@@ -8,20 +8,14 @@ package userinterface;
 import Dao.HeadmasterDaoInterfaceImplementation;
 import Dao.StudentDaoImplementation;
 import Dao.TrainerDaoImplementation;
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Assignment;
 import model.Course;
 import model.User;
@@ -143,7 +137,7 @@ public class LoginPage {
         } else if (selection == 3) {
             askStudentforAssignmentId(iduser);
         } else if (selection == 0) {
-            System.out.println("Goodbye.");;
+            System.out.println("Goodbye.");
         } else {
             displayInitialStudentMenuOptions(iduser);
         }
@@ -216,6 +210,8 @@ public class LoginPage {
             askTrainerforCourseIdView(iduser);
         } else if (selection == 4) {
             askTrainerforCourseIdMark(iduser);
+        } else if (selection == 0) {
+            System.out.println("Goodbye.");
         } else {
             displayInitialTrainerMenuOptions(iduser);
         }
@@ -282,6 +278,8 @@ public class LoginPage {
             callUpdateMethods();
         } else if (selection == 4) {
             callRemoveMethods();
+        } else if (selection == 0) {
+            System.out.println("Goodbye.");;
         } else {
             displayInitialHeadmasterMenuOptions();
         }
@@ -471,14 +469,20 @@ public class LoginPage {
     private void appointStudentToCourse() {
         Scanner in = new Scanner(System.in);
         System.out.println("Please enter course id.");
-        hm1.viewCourses();
+        Map<Integer, Course> m = hm1.viewCourses();
         try {
             int idcourse = in.nextInt();
-            System.out.println("Please enter student id.");
-            hm1.viewStudents();
-            int idstudent = in.nextInt();
-            hm1.appointStudentsToCourse(idstudent, idcourse);
-            displayInitialHeadmasterMenuOptions();
+            if (m.containsKey(idcourse)) {
+
+                System.out.println("Please enter student id.");
+                hm1.viewStudents();
+                int idstudent = in.nextInt();
+                hm1.appointStudentsToCourse(idstudent, idcourse);
+                displayInitialHeadmasterMenuOptions();
+            } else {
+                System.err.println("No such course record.");
+                appointStudentToCourse();
+            }
         } catch (Exception e) {
             appointStudentToCourse();
         }
@@ -488,14 +492,20 @@ public class LoginPage {
     private void appointTrainerToCourse() {
         Scanner in = new Scanner(System.in);
         System.out.println("Please enter course id.");
-        hm1.viewCourses();
+        Map<Integer, Course> m = hm1.viewCourses();
         try {
             int idcourse = in.nextInt();
-            System.out.println("Please enter trainer id.");
-            hm1.viewTrainers();
-            int idstudent = in.nextInt();
-            hm1.appointTrainersToCourse(idstudent, idcourse);
-            displayInitialHeadmasterMenuOptions();
+            if (m.containsKey(idcourse)) {
+
+                System.out.println("Please enter trainer id.");
+                hm1.viewTrainers();
+                int idstudent = in.nextInt();
+                hm1.appointTrainersToCourse(idstudent, idcourse);
+                displayInitialHeadmasterMenuOptions();
+            } else {
+                System.err.println("No such course record.");
+                appointTrainerToCourse();
+            }
         } catch (Exception e) {
             appointTrainerToCourse();
         }
@@ -504,14 +514,20 @@ public class LoginPage {
     private void appointAssToCourse() {
         Scanner in = new Scanner(System.in);
         System.out.println("Please enter course id.");
-        hm1.viewCourses();
+        Map<Integer, Course> m = hm1.viewCourses();
         try {
             int idcourse = in.nextInt();
-            System.out.println("Please enter assignment id.");
-            hm1.viewAssignments();
-            int idass = in.nextInt();
-            hm1.appointAssignmentsToCourse(idass, idcourse);
-            displayInitialHeadmasterMenuOptions();
+            if (m.containsKey(idcourse)) {
+
+                System.out.println("Please enter assignment id.");
+                hm1.viewAssignments();
+                int idass = in.nextInt();
+                hm1.appointAssignmentsToCourse(idass, idcourse);
+                displayInitialHeadmasterMenuOptions();
+            } else {
+                System.err.println("No such course record.");
+                appointAssToCourse();
+            }
         } catch (Exception e) {
             appointAssToCourse();
         }
@@ -520,21 +536,26 @@ public class LoginPage {
     public void ScheduleDayToCourse() {
         Scanner in = new Scanner(System.in);
         System.out.println("Please enter course id.");
-        hm1.viewCourses();
+        Map<Integer, Course> m = hm1.viewCourses();
         try {
             int idcourse = in.nextInt();
-            Course course = hm1.getCourseById(idcourse);
-            System.out.println("Please enter the date(yyyy-MM-dd).");
-            String date = in.next();
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date);
-            Calendar c = Calendar.getInstance();
-            c.setTime(utilDate);
-            c.add(Calendar.DATE, 1);
-            utilDate = c.getTime();
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+            if (m.containsKey(idcourse)) {
+                Course course = hm1.getCourseById(idcourse);
+                System.out.println("Please enter the date(yyyy-MM-dd).");
+                String date = in.next();
+                java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date);
+                Calendar c = Calendar.getInstance();
+                c.setTime(utilDate);
+                c.add(Calendar.DATE, 1);
+                utilDate = c.getTime();
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-            hm1.scheduleDayToCourse(course, sqlDate);
-            displayInitialHeadmasterMenuOptions();
+                hm1.scheduleDayToCourse(course, sqlDate);
+                displayInitialHeadmasterMenuOptions();
+            } else {
+                System.err.println("No such course record.");
+                ScheduleDayToCourse();
+            }
         } catch (Exception e) {
             ScheduleDayToCourse();
         }
@@ -922,5 +943,5 @@ public class LoginPage {
             deleteScheduleCourse();
         }
     }
-    
+
 }
