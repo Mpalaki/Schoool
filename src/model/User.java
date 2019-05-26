@@ -167,15 +167,15 @@ public class User {
         return user;
     }
 
-//    public boolean isUsernameValid(String username) {
-//        Map<String, User> allUsers = getUsers();
-//        if (allUsers.containsKey(username)) {
-//            return true;
-//        } else {
-//            System.out.println("Invalid username");
-//            return false;
-//        }
-//    }
+    public boolean isUsernameValid(String username) {
+        Map<String, User> allUsers = getUsers();
+        if (allUsers.containsKey(username)) {
+            return true;
+        } else {
+            System.out.println("Invalid username");
+            return false;
+        }
+    }
     public Map<String, User> getUsers() {
         Connection conn = dbutils.createConnection();
         String sql = "select * from users";

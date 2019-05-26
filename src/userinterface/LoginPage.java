@@ -428,7 +428,8 @@ public class LoginPage {
         trainer.setUsername(un);
         System.out.println("Please enter password.");
         String pw = in.next();
-        trainer.setPassword(pw);
+        String hashed = u.encrypt(pw);
+        trainer.setPassword(hashed);
         trainer.setIdrole(2);
         hm1.insertTrainer(trainer);
         displayInitialHeadmasterMenuOptions();
@@ -648,7 +649,8 @@ public class LoginPage {
             student.setUsername(un);
             System.out.println("Please enter password.");
             String pw = in.next();
-            student.setPassword(pw);
+            String hashed = u.encrypt(pw);
+            student.setPassword(hashed);
             student.setIdrole(1);
             hm1.updateStudent(student);
             displayInitialHeadmasterMenuOptions();
@@ -677,7 +679,8 @@ public class LoginPage {
             student.setUsername(un);
             System.out.println("Please enter password.");
             String pw = in.next();
-            student.setPassword(pw);
+            String hashed = u.encrypt(pw);
+            student.setPassword(hashed);
             student.setIdrole(2);
             hm1.updateTrainer(student);
             displayInitialHeadmasterMenuOptions();
