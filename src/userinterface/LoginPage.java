@@ -583,7 +583,7 @@ public class LoginPage {
         } else if (selection == 8) {
             viewSchedulePerCourse();
         } else {
-            callRelevantViewMethod(selection);
+            callViewMethods();
         }
     }
 
@@ -651,7 +651,7 @@ public class LoginPage {
         } else if (selection == 4) {
             updateAssignment();
         } else {
-            callRelevantUpdateMethod(selection);
+            callUpdateMethods();
         }
     }
 
