@@ -141,9 +141,9 @@ public class StudentDaoImplementation implements StudentDao {
                 System.out.println("No assignments for you. ");
 
             } else {
-                System.out.println("The list of assignemnts per course for student: '" + student.getFirstname() + " " + student.getLastname() + "' is the below:");
+                System.out.println("The list of your assignemnts per course is the below:");
                 for (int i = 0; i < assignmentcourses.size(); i++) {
-                    System.out.println(i + 1 + "Submission datetime: " + assignmentcourses.get(i).getAssignment().getSubmission_date_time()
+                    System.out.println(i + 1 +"."+ " Submission datetime: " + assignmentcourses.get(i).getAssignment().getSubmission_date_time()
                             + ". Assignment ID: " + assignmentcourses.get(i).getAssignment().getIdassignment()
                             + ", Assignment title: " + assignmentcourses.get(i).getAssignment().getTitle() + ", "
                             + "Course ID: " + assignmentcourses.get(i).getCourse().getIdcourse()

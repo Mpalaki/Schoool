@@ -21,6 +21,7 @@ import model.AssignmentCourseStudent;
 import model.Course;
 import model.Schedule;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import userinterface.LoginPage;
 
 /**
@@ -37,14 +38,11 @@ public class School {
         // TODO code application logic here
 //        Course c = new Course("course1");
         HeadmasterDaoInterfaceImplementation h1 = new HeadmasterDaoInterfaceImplementation();
-        
-        
+
         //////////////////  MAKE USERNAME UNIQUE IN DATABASE  /////////////////
-        
-        
 //        h1.insertCourse(c);
 //        User trainer = new User("Alexandros","Porfiris","Alex123","student4");
-//        User student = new User(6, "r ", "fotrrrrreinos", "fff555", "student 43");
+        User student = new User(6, "Sofia ", "Foteinou", "code", "sofo");
         User trainer = new User(11, "giannis", "Efthymiou", "Bill123", "student 43");
 //        User trainer2 = new User(5,"billis","Efthymiou","Bill123","student 43");
 //        h1.viewStudentsById(1);
@@ -105,7 +103,7 @@ public class School {
 //        sdi.viewSubmissionDatesOfAssignmentsPerCourse(1);
         TrainerDaoImplementation t = new TrainerDaoImplementation();
         StudentDaoImplementation st = new StudentDaoImplementation();
-        
+
 //        t.viewCourses(4);
 //        t.viewStudents(4, 2);
 //            h1.appointAssignmentsToCourse(3,2);
@@ -139,15 +137,40 @@ public class School {
         LoginPage lp = new LoginPage();
 //        lp.displayInitialStudentMenuOptions();
         /////////////////// APPOINT SCHEDULE TO COURSE, MISSING CHECK FOR COURSE ////////////////
-//                lp.welcomePage();
-                                lp.welcomePage();
-
+                lp.welcomePage();
+//String[] a = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "~", "`", "!", "@", "#", "$", "%", "^", "&", "*"};
+//    String[] b = {"d", "o", "v", "b", "z", "g", };
+        User u = new User();
+//        System.out.println(u.encrypt("gp"));
+    
+//        lp.welcomePage();
+//                                h1.viewStudentById(19);
+//        System.out.println(h1.decode("Nikos123"));;
 //        t.viewCoursesPerTrainer(4);
 //        h1.appointTrainersToCourse(4, 1);
 //        System.out.println(st.getAssignmentsPerCoursePerStudent(2));
 //        t.viewAssignmentsPerStudentPerCourse(4, 1);
-    }
+//    String hashed = BCrypt.hashpw("$2a$04$lvdIWpy3aKdOAg3RsuwdcOjAJyaz5sNrcL.UCvd/Cp5ncZYjFnH.m", BCrypt.gensalt(4));
+//
+//        System.out.println(hashed);
+    }}
 
-   
+    // Hash a password for the first time
+//    String password;
+//    String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
+
+// gensalt's log_rounds parameter determines the complexity
+// the work factor is 2**log_rounds, and the default is 10
+//
+//// Check that an unencrypted password matches one that has
+//// previously been hashed
+//    if (BCrypt.checkpw (candidate, hashed)
+//
+//    )
+//	System.out.println("It matches");
+//else
+//    System.out.println (
+//
+//"It does not match");
     
-}
+

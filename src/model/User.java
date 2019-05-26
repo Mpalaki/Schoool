@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -106,7 +108,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "iduser=" + iduser + ", firstname=" + firstname + ", lastname=" + lastname + ", username=" + username + ", idrole=" + idrole + '}';
+        return "User{" + "iduser=" + iduser + ", firstname=" + firstname + ", lastname=" + lastname + ", username=" + username + '}';
     }
 
     @Override
@@ -115,7 +117,6 @@ public class User {
         hash = 71 * hash + this.iduser;
         hash = 71 * hash + Objects.hashCode(this.firstname);
         hash = 71 * hash + Objects.hashCode(this.lastname);
-        hash = 71 * hash + Objects.hashCode(this.password);
         hash = 71 * hash + Objects.hashCode(this.username);
         hash = 71 * hash + this.idrole;
         return hash;
@@ -145,9 +146,7 @@ public class User {
         if (!Objects.equals(this.lastname, other.lastname)) {
             return false;
         }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
+        
         if (!Objects.equals(this.username, other.username)) {
             return false;
         }
@@ -177,7 +176,6 @@ public class User {
 //            return false;
 //        }
 //    }
-
     public Map<String, User> getUsers() {
         Connection conn = dbutils.createConnection();
         String sql = "select * from users";
@@ -227,5 +225,59 @@ public class User {
         }
     }
 
+//    public String encode(String plainText) {
+//        String encodedString = Base64.getEncoder().encodeToString(plainText.getBytes());
+//        return encodedString;
 //
+//    }
+//
+//    public String decode(String encodedString) {
+//        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
+//        String decodedString = new String(decodedBytes);
+//        return decodedString;
+//    }
+    String[] a = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "~", "`", "!", "@", "#", "$", "%", "^", "&", "*"};
+    String[] b = {"d", "o", "v", "b", "z", "g", "f", "s", "a", "e", "D", "p", "c", "H", "I", "h", "Y", "Z", "1", "w", "3", "A", "C", "6", "~", "T", "i", "j", "k", "l", "#", "$", "%", "^", "&", "*", "V", "W", "X", "2", "4", "U", "5", "7", "8", "9", "`", "m", "n", "q", "r", "t", "u", "x", "y", "B", "E", "F", "G", "P", "J", "N", "O", "Q", "S", "!", "K", "R", "@", "L", "M"};
+
+    public String encrypt(String s) {
+        String[] sarr = explode(s);
+        String[] arr = new String[sarr.length];
+        for (int i = 0; i < sarr.length; i++) {
+            for (int j = 0; j < a.length; j++) {
+                if (sarr[i].equals(a[j])) {
+                    arr[i] = b[j];
+                }
+            }
+        }
+        return arrToString(arr);
+    }
+
+    public String uncrypt(String s) {
+        String[] sarr = explode(s);
+        String[] arr = new String[sarr.length];
+        for (int i = 0; i < sarr.length; i++) {
+            for (int j = 0; j < b.length; j++) {
+                if (sarr[i].equals(b[j])) {
+                    arr[i] = a[j];
+                }
+            }
+        }
+        return arrToString(sarr);
+    }
+
+    public String[] explode(String s) {
+        String[] arr = new String[s.length()];
+        for (int i = 0; i < s.length(); i++) {
+            arr[i] = String.valueOf(s.charAt(i));
+        }
+        return arr;
+    }
+
+    public String arrToString(String[] sa) {
+        String s = "";
+        for (int i = 0; i < sa.length; i++) {
+            s = s + sa[i];
+        }
+        return s;
+    }
 }

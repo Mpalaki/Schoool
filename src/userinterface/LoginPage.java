@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import model.Assignment;
 import model.Course;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -43,7 +45,8 @@ public class LoginPage {
             String password = user.getPassword();
             System.out.println("Please enter your password.");
             String enteredpassword = in.next();
-            if (password.equals(enteredpassword)) {
+            String pw = u.encrypt(enteredpassword);
+            if (pw.equals(password)) {
                 System.out.println("Welcome " + user.getFirstname() + "!");
                 displayMenuOptionsAccordingToRole(user.getIdrole(), user.getIduser());
             } else {
@@ -322,7 +325,7 @@ public class LoginPage {
             int selection = in.nextInt();
             callRelevantViewMethod(selection);
         } catch (Exception e) {
-            callCreateMethods();
+            callViewMethods();
         }
     }
 
@@ -404,7 +407,8 @@ public class LoginPage {
         student.setUsername(un);
         System.out.println("Please enter password.");
         String pw = in.next();
-        student.setPassword(pw);
+        String hashed = u.encrypt(pw);
+        student.setPassword(hashed);
         student.setIdrole(1);
         hm1.insertStudent(student);
         displayInitialHeadmasterMenuOptions();
@@ -534,12 +538,16 @@ public class LoginPage {
     private void callRelevantViewMethod(int selection) {
         if (selection == 1) {
             hm1.viewStudents();
+            displayInitialHeadmasterMenuOptions();
         } else if (selection == 2) {
             hm1.viewTrainers();
+            displayInitialHeadmasterMenuOptions();
         } else if (selection == 3) {
             hm1.viewCourses();
+            displayInitialHeadmasterMenuOptions();
         } else if (selection == 4) {
             hm1.viewAssignments();
+            displayInitialHeadmasterMenuOptions();
         } else if (selection == 5) {
             viewStudentsPerCourse();
         } else if (selection == 6) {
@@ -866,7 +874,7 @@ public class LoginPage {
             List l = hm1.viewSchedulePerCourse(course);
             if (!l.isEmpty()) {
                 System.out.println("Please enter the date(yyyy-MM-dd).");
-                
+
                 String date = in.next();
                 java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(date);
                 Calendar c = Calendar.getInstance();
@@ -875,8 +883,8 @@ public class LoginPage {
                 utilDate = c.getTime();
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 //                Date sqldate = java.sql.Date.valueOf(dateInput(date, iduser));
-                hm1.removeScheduleFromCourse(course,sqlDate);
-     
+                hm1.removeScheduleFromCourse(course, sqlDate);
+
                 displayInitialHeadmasterMenuOptions();
             } else {
                 System.out.println("No scheduled days for this course.");
@@ -887,4 +895,15 @@ public class LoginPage {
         }
     }
 
+    public String encode(String plainText) {
+        String encodedString = Base64.getEncoder().encodeToString(plainText.getBytes());
+        return encodedString;
+
+    }
+
+    public String decode(String encodedString) {
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
+        String decodedString = new String(decodedBytes);
+        return decodedString;
+    }
 }
