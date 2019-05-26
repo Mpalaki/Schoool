@@ -51,11 +51,13 @@ public class TrainerDaoImplementation implements TrainerDao {
                 course = hm.getCourseById(idcourse);
                 courses.add(course);
             }
-
+            if(courses.isEmpty()){
+                System.out.println("You are not assigned to any courses.");}
+            else{
             System.out.println("The list of courses you are enrolled in, is the below:");
             for (int i = 0; i < courses.size(); i++) {
                 System.out.println(i + 1 + ". ID: " + courses.get(i).getIdcourse() + "; Title: " + courses.get(i).getCourse_title());
-            }
+            }}
 
         } catch (SQLException ex) {
             Logger.getLogger(HeadmasterDaoInterfaceImplementation.class.getName()).log(Level.SEVERE, null, ex);

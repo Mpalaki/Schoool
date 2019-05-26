@@ -112,7 +112,7 @@ public class StudentDaoImplementation implements StudentDao {
                 + "inner join users u\n"
                 + "on sc.idusers=u.idusers\n"
                 + "left join assignmentcoursestudent b\n"
-                + "on b.idusers=u.idusers \n"
+                + "on b.idusers=u.idusers  and a.idassignment=b.idassignment and c.idcourse=b.idcourse \n"
                 + "where u.idusers=?\n"
                 + "order by c.idcourse";
         try {
@@ -274,7 +274,7 @@ public class StudentDaoImplementation implements StudentDao {
 //                    System.out.println("No students appointed to this course");
 //                }
             } else {
-                System.out.println("The list of assignemnts per course for student: '" + student.getFirstname() + " " + student.getLastname() + "' is the below:");
+                System.out.println("The list of your assignemnts per courses is the below:");
                 for (int i = 0; i < assignmentcourses.size(); i++) {
                     System.out.println(i + 1 + ". Assignment ID: " + assignmentcourses.get(i).getAssignment().getIdassignment()
                             + ", Assignment title: " + assignmentcourses.get(i).getAssignment().getTitle() + ", "

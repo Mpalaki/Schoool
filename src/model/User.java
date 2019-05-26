@@ -10,14 +10,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import userinterface.LoginPage;
 import utils.dbutils;
 
 /**
@@ -225,17 +222,7 @@ public class User {
         }
     }
 
-//    public String encode(String plainText) {
-//        String encodedString = Base64.getEncoder().encodeToString(plainText.getBytes());
-//        return encodedString;
-//
-//    }
-//
-//    public String decode(String encodedString) {
-//        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
-//        String decodedString = new String(decodedBytes);
-//        return decodedString;
-//    }
+
     String[] a = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "~", "`", "!", "@", "#", "$", "%", "^", "&", "*"};
     String[] b = {"d", "o", "v", "b", "z", "g", "f", "s", "a", "e", "D", "p", "c", "H", "I", "h", "Y", "Z", "1", "w", "3", "A", "C", "6", "~", "T", "i", "j", "k", "l", "#", "$", "%", "^", "&", "*", "V", "W", "X", "2", "4", "U", "5", "7", "8", "9", "`", "m", "n", "q", "r", "t", "u", "x", "y", "B", "E", "F", "G", "P", "J", "N", "O", "Q", "S", "!", "K", "R", "@", "L", "M"};
 

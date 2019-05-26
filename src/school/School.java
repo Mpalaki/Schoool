@@ -21,7 +21,6 @@ import model.AssignmentCourseStudent;
 import model.Course;
 import model.Schedule;
 import model.User;
-import org.mindrot.jbcrypt.BCrypt;
 import userinterface.LoginPage;
 
 /**
@@ -45,92 +44,21 @@ public class School {
         User student = new User(6, "Sofia ", "Foteinou", "code", "sofo");
         User trainer = new User(11, "giannis", "Efthymiou", "Bill123", "student 43");
 //        User trainer2 = new User(5,"billis","Efthymiou","Bill123","student 43");
-//        h1.viewStudentsById(1);
-//        h1.viewCourses();
-//        h1.viewCourseById(4);
-//        Course course = new Course(3, "BC11");
-//        h1.updateCourse(course);
-//        h1.viewTrainers();
-//        h1.viewTrainerById(1);
-//        h1.viewStudentById(4);
-//        h1.updateStudent(student);
-//        h1.updateTrainer(trainer);
-//        UserCourse uc = new UserCourse(course);
-//        h1.appointStudentsToCourse(2, 3);
-//        h1.appointTrainersToCourse(4, 3);
-//        int year, int month, int date,
-//                     int hour, int minute, int second, int nano
-//        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf("2007-09-23 10:10:10.0");
-//        Assignment assignment = new Assignment(1,"Ass311",timestamp);
-//        Assignment ass = new Assignment(1,"test1");
-//                h1.updateAssignment(ass);
 
-//        h1.updateAssignment(ass);
-//h1.viewCourses();
-//        h1.deleteAssignment(2);
-//        h1.deleteAssignment(41);
-//        h1.deleteCourse(55);
-//        h1.updateStudent(student);
+
         Course c = h1.getCourseById(2);
-//        h1.insertCourse(c);
-//        h1.viewCourseById(2);
-//        h1.deleteStudent(10);
-//        h1.insertStudent(student);
-//        h1.viewStudentById(1);
-//        h1.viewStudentById(9);h1\\
-//        h1.insertTrainer(trainer);
-//        h1.deleteTrainer(1);
-//        h1.viewAssignments();
-//        h1.deleteAssignment(7);
-//        h1.appointTrainersToCourse(7, 1);
-//        h1.appointAssignmentsToCourse(5, 2);
-//        h1.viewAssignmentsPerCourse(2);
-//        h1.deleteCourse(6);
-//        h1.removeStudentFromCourse(2,1);
-//        h1.viewStudentsPerCourse(1);
-//        h1.removeTrainerFromCourse(5, 1);
-//        h1.removeAssignmentFromCourse(3, 2);
-//        String s = "February 3, 2019";
-//        dateInput(s);
-//        h1.viewSchedulePerCourse(c);
 
-//        Schedule schedule = new Schedule(c,"9/9/2019" );
-//        Course c1 = new Course(12,"man");
-//        Course c1 = h1.getCourseById(2);
-//        h1.removeScheduleFromCourse(c,"3919-09-07");
-//        h1.appointAssignmentsToCourse(8, 1);
-//        StudentDaoImplementation sdi = new StudentDaoImplementation();
+
 //        sdi.viewSubmissionDatesOfAssignmentsPerCourse(1);
         TrainerDaoImplementation t = new TrainerDaoImplementation();
         StudentDaoImplementation st = new StudentDaoImplementation();
 
 //        t.viewCourses(4);
 //        t.viewStudents(4, 2);
-//            h1.appointAssignmentsToCourse(3,2);
-//        h1.appointStudentsToCourse(1, 1);
-//        h1.removeAssignmentFromCourse(4, 1);
-//        h1.insertStudent(student);
-//        h1.removeStudentFromCourse(1, 1);
-//        t.viewAssignmentsPerStudentPerCourse(2);
-//        t.updateAssignmentCourseStudentTable(1);
-//            t.markAssignmentPerStudentPerCourse(3,1,2,80);
-//        st.viewAssignmentsPerCoursePerStudent(1);
-//        st.submitAssignment(3, 13, 3);
-//        st.viewDailySchedule(1, "2019-05-20");
-//        st.viewSubmissionDatesOfAssignmentsPerCourse(1);
-//        t.markAssignmentPerStudentPerCourse(3, 13, 13, 99);
-//        h1.removeStudentFromCourse(13, 2);
-//        h1.appointAssignmentsToCourse(8, 2);
-//        h1.appointStudentsToCourse(15, 2);
-//        st.submitAssignment(3, 2, 2);
-//        t.markAssignmentPerStudentPerCourse(6, 2, 1, 100);
+
 //        System.out.println(t.getAssignmentsPerStudentPerCourse(2));
         AssignmentCourseStudent acs = new AssignmentCourseStudent();
-//        System.out.println(acs.listOfSubmittedAssignments());
-//        System.out.println(acs.isAssignmentSubmitted(3, 2, 1));
-//        System.out.println(acs.getAssignmentCourseStudentFromIds(3,2,1));
-//        System.out.println(acs.isAssignmentMarked(3, 2, 1));
-//        System.out.println(acs.isAssignmentExistentButNotSubmitted(6, 2, 1));
+ 
         User user = new User();
 //        System.out.println(user.getUserByUsername("student2"));
 
@@ -145,32 +73,10 @@ public class School {
     
 //        lp.welcomePage();
 //                                h1.viewStudentById(19);
-//        System.out.println(h1.decode("Nikos123"));;
-//        t.viewCoursesPerTrainer(4);
-//        h1.appointTrainersToCourse(4, 1);
-//        System.out.println(st.getAssignmentsPerCoursePerStudent(2));
-//        t.viewAssignmentsPerStudentPerCourse(4, 1);
-//    String hashed = BCrypt.hashpw("$2a$04$lvdIWpy3aKdOAg3RsuwdcOjAJyaz5sNrcL.UCvd/Cp5ncZYjFnH.m", BCrypt.gensalt(4));
-//
+
 //        System.out.println(hashed);
     }}
 
-    // Hash a password for the first time
-//    String password;
-//    String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-
-// gensalt's log_rounds parameter determines the complexity
-// the work factor is 2**log_rounds, and the default is 10
-//
-//// Check that an unencrypted password matches one that has
-//// previously been hashed
-//    if (BCrypt.checkpw (candidate, hashed)
-//
-//    )
-//	System.out.println("It matches");
-//else
-//    System.out.println (
-//
-//"It does not match");
+    
     
 
