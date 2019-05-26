@@ -1407,7 +1407,7 @@ public class HeadmasterDaoInterfaceImplementation implements HeadmasterDaoInterf
 
                 System.out.println("The list of assignments for course: '" + course.getCourse_title() + "' is the below:");
                 for (int i = 0; i < assignments.size(); i++) {
-                    System.out.println(i + 1 + ". " + assignments.get(i).getTitle() + ", submission date and time: " + assignments.get(i).getSubmission_date_time());
+                    System.out.println(i + 1 + ". ID: " + assignments.get(i).getIdassignment() + ", title: "+ assignments.get(i).getTitle() + ", submission date and time: " + assignments.get(i).getSubmission_date_time());
                 }
 
             } catch (SQLException ex) {

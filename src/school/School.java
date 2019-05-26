@@ -23,6 +23,7 @@ public class School {
         // HEADMASTER: USERNAME="gp" , PASSWORD="gp"
         // STUDENT: USERNAME="mak" , PASSWORD="mak"
         // TRAINER: USERNAME="sp" , PASSWORD="sp"
+        // Μια λεπτομέρεια- στην βάση μου κάποια στιγμή είχα φτιάξει 
 
         LoginPage lp = new LoginPage();
         lp.welcomePage();
